@@ -16,6 +16,7 @@
         "eslint-plugin-prettier": "^3.1.1",
         "eslint-plugin-react-directives": "^1.0.1",
         "lerna": "^3.18.4",
+        "nodemon": "^2.0.1",
         "prettier": "^1.18.2",
         "typescript": "^3.7.2"
     },
@@ -23,6 +24,7 @@
         "dev": "lerna run dev --stream --parallel",
         "build": "lerna bootstrap && lerna run build",
         "publish": "npm run build && lerna publish && node scripts/onPublish",
-        "lint": "lerna run lint --stream --parallel"
+        "lint": "lerna run lint --stream --parallel",
+        "generator": "npm run build && node packages/react-component-generator/dist/index.js"
     }
 }

@@ -2,7 +2,7 @@
     "name": "@20i/scripts",
     "version": "1.0.3",
     "description": "Pre-built scripts and tools to allow quick writing of node scripts",
-    "entry": "dist/index.js",
+    "main": "./dist/index.js",
     "scripts": {
         "build": "npx tsc",
         "dev": "npx tsc -w",

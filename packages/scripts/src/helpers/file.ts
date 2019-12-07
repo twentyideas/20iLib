@@ -50,7 +50,7 @@ function dirsInDirectory(dir: string, recursive = true, acc: string[] = []) {
     }
 }
 
-function writeFile(params = { srcFile: "", data: "", dest: "" }) {
+function writeFile(params: { srcFile?:string, data?:string, dest:string }) {
     try {
         const { srcFile, data, dest } = params
         const raw = srcFile ? fs.readFileSync(srcFile) : data

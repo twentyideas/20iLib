@@ -1,0 +1,21 @@
+{
+    "name": "@20i/react-component-generator",
+    "version": "1.0.3",
+    "description": "Generates components and store modules in a react-project",
+    "main": "./dist/index.js",
+    "scripts": {
+        "build": "npx tsc && node postBuild",
+        "dev": "nodemon",
+        "lint": "eslint --fix \"src/**/*.{js,ts,jsx,tsx}\""
+    },
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "@20i/scripts": "^1.0.3",
+        "inquirer": "^7.0.0",
+        "lodash": "^4.17.15"
+    },
+    "bin": {
+        "fire-station": "dist/index.js"
+    }
+}
