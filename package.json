@@ -24,7 +24,6 @@
         "dev": "lerna run dev --stream --parallel",
         "build": "lerna bootstrap && lerna run build",
         "publish": "npm run build && lerna publish && node scripts/onPublish",
-        "lint": "lerna run lint --stream --parallel",
-        "generator": "npm run build && node packages/react-component-generator/dist/index.js"
+        "lint": "lerna run lint --stream --parallel"
     }
 }
