@@ -1,3 +1,4 @@
+#! /usr/bin/env node
 import inquirer from "inquirer"
 import lodash from "lodash"
 import { getConfig, createConfig } from "./config"
