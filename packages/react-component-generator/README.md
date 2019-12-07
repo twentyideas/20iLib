@@ -1,39 +1,9 @@
 
-# @20i/scripts
-This package aims to provide useful scripts & functions to quickly write cross platform node-js scripts. 
+# @20i/react-component-generator
+This package aims to make component creation super quick & easy in react.
+The components follow most patterns established by the 20i team.
 
-Included in the project.
-
- - cmd
-	 - runCommand
-	 - runCommandInteractive
- - git
-	- cleanLocalBranches	// runnable if env has --run=true
-	- getCurrentGitBranch // runnable if env has --run=true
--	helpers
-	-	file
-		-	filesInDirectory
-        -   dirsInDirectory
-        -   dirExists
-        -   fileExists
-        -   writeFile
-        -   copyDir
-        -   copyFile
-        -   removeDir
-        -   createDir
-        -   removeFile
-        -   readFile
-        -   getFileOrFolderName
-        -   getTemplate
-	-	string
-        -   containsWhitespace
-        -   containsNumbers
-        -   containsAlphabets
-        -   isOnlyAlphanumeric
-        -   isOnlyNumeric
-        -   isOnlyAlpha
-        -   isInteger
-        -   replace
-	-	env
-        -   onProcessExit
-        -   getEnvVars
+To run the generator, simply run:
+```
+npx react-component-generator
+```
