@@ -23,7 +23,7 @@
     "scripts": {
         "dev": "lerna run dev --stream --parallel",
         "build": "lerna bootstrap && lerna run build",
-        "publish": "npm run build && lerna publish && node scripts/onPublish",
+        "publish": "npm run build && lerna publish",
         "lint": "lerna run lint --stream --parallel"
     }
 }
