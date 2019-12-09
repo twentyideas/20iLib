@@ -5,5 +5,5 @@ The components follow most patterns established by the 20i team.
 
 To run the generator, simply run:
 ```
-npx react-component-generator
+npx @20i/react-component-generator
 ```
