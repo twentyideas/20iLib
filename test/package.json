@@ -1,8 +1,0 @@
-{
-    "name": "root",
-    "private": true,
-    "scripts": {
-        "build": "cd ../ && lerna run build --scope=@20i/react-component-generator",
-        "generator": "npm run build && node ../packages/react-component-generator/dist/index.js"
-    }
-}
