@@ -1,0 +1,23 @@
+{
+    "name": "@20i/timesync-server",
+    "version": "1.0.0",
+    "description": "20i timesync server",
+    "main": "src/main.ts",
+    "author": "wolf",
+    "license": "ISC",
+    "private": true,
+    "scripts": {
+        "build": "npx tsc",
+        "start": "node ./build/main.js",
+        "dev": "nodemon",
+        "deploy": "npm run build && node deploy",
+        "lint": "eslint --fix \"src/**/*.{js,ts,jsx,tsx}\""
+    },
+    "dependencies": {
+        "@20i/heroku-deploy-node": "^1.0.15",
+        "cors": "^2.8.5",
+        "express": "^4.17.1",
+        "lodash": "^4.17.15",
+        "timesync": "^1.0.4"
+    }
+}

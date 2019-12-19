@@ -1,0 +1,17 @@
+{
+    "name": "@20i/timesync",
+    "version": "1.0.7",
+    "description": "Small library to sync time to a time server",
+    "main": "./dist/index.js",
+    "scripts": {
+        "build": "npx tsc",
+        "dev": "npx tsc -w",
+        "lint": "eslint --fix \"src/**/*.{js,ts,jsx,tsx}\""
+    },
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "moment": "^2.24.0",
+        "timesync": "^1.0.4"
+    }
+}
