@@ -213,13 +213,6 @@ export async function herokuDeployNode({ remoteIds, projectName, buildDirs, buil
             choices: lodash.values(ReleaseType),
             message: "What type of depoy is this?",
             default: ReleaseType.PATCH
-        },
-        {
-            type: "confirm",
-            name: "commitOnSuccess",
-            when: (answers: Partial<InquirerAnswers>) => answers.releaseType !== ReleaseType.NONE,
-            message: "Add git commit and tag on success?",
-            default: true
         }
     ])
 
