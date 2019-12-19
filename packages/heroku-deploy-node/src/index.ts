@@ -112,7 +112,8 @@ const helpers = {
                 zip.addLocalFolder(folder, relativePath)
             })
             files.forEach(file => {
-                const relativePath = path.relative(root, file)
+                const fileFolder = file.split(path.sep).slice(-1).join(path.sep)
+                const relativePath = path.relative(root, fileFolder)
                 zip.addLocalFile(file, relativePath)
             })
 
