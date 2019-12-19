@@ -112,7 +112,10 @@ const helpers = {
                 zip.addLocalFolder(folder, relativePath)
             })
             files.forEach(file => {
-                const fileFolder = file.split(path.sep).slice(-1).join(path.sep)
+                const fileFolder = file
+                    .split(path.sep)
+                    .slice(0, -1)
+                    .join(path.sep)
                 const relativePath = path.relative(root, fileFolder)
                 zip.addLocalFile(file, relativePath)
             })
@@ -242,7 +245,6 @@ export async function herokuDeployNode({ remoteIds, projectName, buildDirs, buil
     if (newVersion && (!packageJsons || !packageJsons.length)) {
         console.log("If you include package.jsons in the params, we can autoupdate them & git tag/push")
     }
-
 
     if (newVersion && packageJsons && packageJsons.length) {
         helpers.files.updatePackageJsonVersionNumbers(newVersion, packageJsons)
