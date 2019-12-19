@@ -1,7 +1,7 @@
 import lodash from "lodash"
 import * as path from "path"
+import * as scripts from "@20i/scripts"
 import inquirer from "inquirer"
-import scripts from "@20i/scripts"
 import EnvPaths from "env-paths"
 import AdmZip from "adm-zip"
 
@@ -39,7 +39,7 @@ interface CreateDeployParams {
 const { runCommand } = scripts.cmd
 
 // use this to get system temp path
-const ENV_PATH = EnvPaths("peerlearning-build")
+const ENV_PATH = EnvPaths("heroku-deploy-node-build")
 
 const PATHS = {
     build: {
