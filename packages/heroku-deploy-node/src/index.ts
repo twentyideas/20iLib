@@ -113,7 +113,7 @@ const helpers = {
             })
             files.forEach(file => {
                 const relativePath = path.relative(root, file)
-                zip.addLocalFolder(file, relativePath)
+                zip.addLocalFile(file, relativePath)
             })
 
             zip.writeZip(PATHS.deploy.zip)
