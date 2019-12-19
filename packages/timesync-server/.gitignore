@@ -24,7 +24,6 @@ yarn-error.log*
 secrets.*
 
 src/env.json
-package-lock.json
 
 # production. Always leave this in the end. The deploy script removes this for heroku deployment to work!
 /build
