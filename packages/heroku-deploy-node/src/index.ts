@@ -193,7 +193,7 @@ const helpers = {
     }
 }
 
-async function deploy({ remoteIds, projectName, buildDirs, buildFiles, buildRoot, packageJsons }: DeployParams) {
+export async function herokuDeployNode({ remoteIds, projectName, buildDirs, buildFiles, buildRoot, packageJsons }: DeployParams) {
     if (!remoteIds.length) {
         console.log("Please provide heroku remoteIds to deploy")
         return
@@ -261,5 +261,3 @@ async function deploy({ remoteIds, projectName, buildDirs, buildFiles, buildRoot
 
     console.log("Deploy completed...")
 }
-
-export default deploy
