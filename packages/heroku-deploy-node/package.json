@@ -1,0 +1,20 @@
+{
+    "name": "@20i/heroku-deploy-node",
+    "version": "1.0.7",
+    "description": "Inquirier script to deploy to heroku",
+    "main": "./dist/index.js",
+    "scripts": {
+        "build": "npx tsc",
+        "dev": "npx tsc -w",
+        "lint": "eslint --fix \"src/**/*.{js,ts,jsx,tsx}\""
+    },
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "@20i/scripts": "^1.0.7",
+        "adm-zip": "^0.4.13",
+        "env-paths": "^2.2.0",
+        "inquirer": "^7.0.1",
+        "lodash": "^4.17.15"
+    }
+}
