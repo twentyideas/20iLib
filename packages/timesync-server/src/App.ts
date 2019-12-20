@@ -12,7 +12,10 @@ export default class App {
         this.port = port
 
         middlewares.forEach(middleware => this.app.use(middleware))
-        this.app.use("/api/timesync", timesyncServer.requestHandler)
+        this.app.use("/timesync", timesyncServer.requestHandler)
+        this.app.use("/now", (req, res) => {
+            res.status(200).send(new Date().toISOString())
+        })
     }
 
     listen = () => {
