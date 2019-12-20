@@ -1,5 +1,5 @@
 import express from "express"
-import * as timesyncServer from "timesync/server"
+import * as timesyncServer from "timesync-fork-wolf/server"
 
 type MiddleWareFn = (req: express.Request, res: express.Response, next: () => void) => void
 

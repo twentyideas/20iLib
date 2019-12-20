@@ -12,6 +12,6 @@
     "license": "ISC",
     "dependencies": {
         "moment": "^2.24.0",
-        "timesync": "https://github.com/vvolfster/timesync.git"
+        "timesync-fork-wolf": "^1.0.5"
     }
 }

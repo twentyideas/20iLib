@@ -1,4 +1,4 @@
-declare module "timesync" {
+declare module "timesync-fork-wolf" {
     type TimeSyncEvents = "change" | "error" | "sync"
 
     interface TsInitParams {

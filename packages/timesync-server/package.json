@@ -18,6 +18,6 @@
         "cors": "^2.8.5",
         "express": "^4.17.1",
         "lodash": "^4.17.15",
-        "timesync": "https://github.com/vvolfster/timesync.git"
+        "timesync-fork-wolf": "^1.0.5"
     }
 }

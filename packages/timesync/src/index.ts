@@ -1,5 +1,5 @@
 import moment from "moment"
-import * as TimeSync from "timesync"
+import * as TimeSync from "timesync-fork-wolf"
 
 type momentInput = string | number | void | moment.Moment | Date | (string | number)[] | moment.MomentInputObject | undefined
 type momentFormat = string | moment.MomentBuiltinFormat | (string | moment.MomentBuiltinFormat)[] | undefined
