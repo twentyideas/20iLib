@@ -7,6 +7,7 @@ import timesync from "@20i/timesync"
 
 async function() {
     await timesync.init()
-    console.log(timesync.now().toISOString())
+    console.log("offsetMs", timesync.offsetMs)
+    console.log("moment", timesync.now().toISOString())
 }
 ```
