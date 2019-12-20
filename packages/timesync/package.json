@@ -1,6 +1,6 @@
 {
     "name": "@20i/timesync",
-    "version": "1.0.16",
+    "version": "1.0.17",
     "description": "Small library to sync time to a time server",
     "main": "./dist/index.js",
     "scripts": {
