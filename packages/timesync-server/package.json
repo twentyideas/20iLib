@@ -1,6 +1,6 @@
 {
     "name": "@20i/timesync-server",
-    "version": "1.0.17",
+    "version": "1.0.19",
     "description": "20i timesync server",
     "main": "src/main.ts",
     "author": "wolf",
