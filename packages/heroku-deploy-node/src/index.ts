@@ -4,6 +4,7 @@ import * as scripts from "@20i/scripts"
 import inquirer from "inquirer"
 import EnvPaths from "env-paths"
 import AdmZip from "adm-zip"
+import fs from "fs"
 
 enum ReleaseType {
     PATCH = "patch",
@@ -117,7 +118,23 @@ const helpers = {
                     .slice(0, -1)
                     .join(path.sep)
                 const relativePath = path.relative(root, fileFolder)
-                zip.addLocalFile(file, relativePath)
+
+                // if this is a package.json, update the version number to the new one
+                const fileName = file.split(path.sep).slice(-1)[0]
+                if (fileName === "package.json") {
+                    try {
+                        const packageJson = JSON.parse(fs.readFileSync(file, { encoding: "utf8" }))
+                        packageJson.version = version
+                        const stringified = JSON.stringify(packageJson, null, 4)
+                        zip.addFile(relativePath, Buffer.alloc(stringified.length, stringified), stringified)
+                        console.log(`Build:: Incremented ${relativePath} version to ${version}`)
+                    } catch (e) {
+                        console.error("Unable to increment package.json version. Adding file as is")
+                        zip.addLocalFile(file, relativePath)
+                    }
+                } else {
+                    zip.addLocalFile(file, relativePath)
+                }
             })
 
             zip.writeZip(PATHS.deploy.zip)
