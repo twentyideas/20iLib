@@ -5,10 +5,10 @@ type momentInput = string | number | void | moment.Moment | Date | (string | num
 type momentFormat = string | moment.MomentBuiltinFormat | (string | moment.MomentBuiltinFormat)[] | undefined
 
 export class TimeClient {
-    offsetMs: number = 0
+    offsetMs = 0
     timeSyncInstance?: TimeSync.TimeSyncInstance
 
-    init = (timesyncEndpoint: string = "https://twentyideas-timesync.herokuapp.com/timesync", interval?: number) => {
+    init = (timesyncEndpoint = "https://twentyideas-timesync.herokuapp.com/timesync", interval?: number) => {
         return new Promise(resolve => {
             const i = interval && interval > 0 ? Math.max(10000, interval) : undefined
             if (i && i !== interval) {

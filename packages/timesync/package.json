@@ -12,6 +12,6 @@
     "license": "ISC",
     "dependencies": {
         "moment": "^2.24.0",
-        "timesync-fork-wolf": "^1.0.5"
+        "timesync-fork-wolf": "^1.0.7"
     }
 }
