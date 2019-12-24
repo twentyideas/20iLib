@@ -126,8 +126,9 @@ const helpers = {
                         const packageJson = JSON.parse(fs.readFileSync(file, { encoding: "utf8" }))
                         packageJson.version = version
                         const stringified = JSON.stringify(packageJson, null, 4)
-                        zip.addFile(relativePath, Buffer.alloc(stringified.length, stringified), stringified)
-                        console.log(`Build:: Incremented ${relativePath} version to ${version}`)
+                        const p = [relativePath, fileName].filter(Boolean).join(path.sep)
+                        zip.addFile(p, Buffer.alloc(stringified.length, stringified), stringified)
+                        console.log(`Build:: Incremented ${p} version to ${version}`)
                     } catch (e) {
                         console.error("Unable to increment package.json version. Adding file as is")
                         zip.addLocalFile(file, relativePath)
