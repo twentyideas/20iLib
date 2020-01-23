@@ -1,0 +1,20 @@
+{
+    "name": "@20i/firestore-models",
+    "version": "1.0.22",
+    "description": "Easily manipulate firestore collections in a standardized way",
+    "author": "wolf",
+    "license": "ISC",
+    "private": true,
+    "main": "dist/index.js",
+    "scripts": {
+        "build": "npx tsc",
+        "dev": "npx tsc -w"
+    },
+    "dependencies": {
+        "@20i/exceptions": "^1.0.22",
+        "firebase": "7.6.1",
+        "firebase-admin": "8.9.0",
+        "is-url": "^1.2.4",
+        "lodash": "^4.17.15"
+    }
+}

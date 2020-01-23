@@ -1,0 +1,16 @@
+{
+    "name": "@20i/exceptions",
+    "version": "1.0.22",
+    "description": "Standard exceptions to throw",
+    "author": "wolf",
+    "license": "ISC",
+    "private": true,
+    "main": "dist/index.js",
+    "scripts": {
+        "build": "npx tsc",
+        "dev": "npx tsc -w"
+    },
+    "dependencies": {
+        "lodash": "^4.17.15"
+    }
+}

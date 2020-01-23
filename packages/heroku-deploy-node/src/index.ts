@@ -127,6 +127,7 @@ const helpers = {
                         packageJson.version = version
                         const stringified = JSON.stringify(packageJson, null, 4)
                         const p = [relativePath, fileName].filter(Boolean).join(path.sep)
+                        console.log(`Build:: Incrementing ${p} version to ${version}...`)
                         zip.addFile(p, Buffer.alloc(stringified.length, stringified), stringified)
                         console.log(`Build:: Incremented ${p} version to ${version}`)
                     } catch (e) {
