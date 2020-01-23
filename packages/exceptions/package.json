@@ -4,7 +4,6 @@
     "description": "Standard exceptions to throw",
     "author": "wolf",
     "license": "ISC",
-    "private": true,
     "main": "dist/index.js",
     "scripts": {
         "build": "npx tsc",
