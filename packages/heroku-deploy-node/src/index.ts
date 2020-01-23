@@ -205,6 +205,18 @@ const helpers = {
         addTagAndPush(verisonNumber: string) {
             runCommand(`git tag -a ${verisonNumber} -m "v${verisonNumber}"`)
             runCommand(`git push --follow-tags`)
+        },
+        generateReleaseNotes(versionNumber?: string) {
+            try {
+                if (!versionNumber) {
+                    runCommand(`gren release --tags=${versionNumber} --override --data-source=commits`)
+                } else {
+                    runCommand(`gren release --tags=all --override --data-source=commits`)
+                }
+            } catch (e) {
+                console.log("Make sure that github-release-notes is installed: https://www.npmjs.com/package/github-release-notes")
+                console.error(e)
+            }
         }
     },
     ToInqurierAnswers(answers: Partial<InquirerAnswers>): InquirerAnswers {
@@ -269,6 +281,7 @@ export async function herokuDeployNode({ remoteIds, projectName, buildDirs, buil
         helpers.files.updatePackageJsonVersionNumbers(newVersion, packageJsons)
         helpers.git.commit()
         helpers.git.addTagAndPush(newVersion)
+        helpers.git.generateReleaseNotes(newVersion)
         console.log(`Finished deploying ${newVersion} to`, chosenRemoteIds)
     } else {
         console.log(`Finished deploying ${newVersion || helpers.files.getCurrentVersion(buildRoot)} to`, chosenRemoteIds)
