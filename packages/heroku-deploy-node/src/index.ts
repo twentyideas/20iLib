@@ -160,7 +160,7 @@ const helpers = {
                         },
                         scripts: {
                             // rebuild packages that need it!!
-                            build: "node extractDeployment && cd out && npm run rebuild",
+                            build: "node extractDeployment && cd out && npm rebuild",
                             start: "cd out && npm run start"
                         }
                     },
