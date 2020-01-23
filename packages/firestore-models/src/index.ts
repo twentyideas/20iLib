@@ -37,8 +37,6 @@ function now() {
 // eslint-disable-next-line @typescript-eslint/no-empty-function
 const defaultValidationFn = () => {}
 
-
-
 // always call this first!!
 export function init(app: Firebase.app.App | admin.app.App, nowFn?: () => Date) {
     state.app = app
@@ -47,7 +45,7 @@ export function init(app: Firebase.app.App | admin.app.App, nowFn?: () => Date) 
 
 export function baseRecord(): FirestoreModels.BaseRecord {
     const nowStr = now().toISOString()
-    return  {
+    return {
         id: FirestoreModels.NO_ID,
         dateCreated: nowStr,
         dateUpdated: nowStr,
@@ -55,7 +53,6 @@ export function baseRecord(): FirestoreModels.BaseRecord {
         userIdUpdated: FirestoreModels.NO_ID
     }
 }
-
 
 export interface ValidationFns<T> {
     get: FirestoreModels.VALIDATION_FN<T>
@@ -81,7 +78,12 @@ export class FirebaseModelFns<T extends FirestoreModels.BaseRecord> {
         }
 
         const payload = pickBy(partial, (v, k) => !["userIdCreated", "dateCreated"].includes(k))
-        const entityUpdated = this._blankFn({ ...current, ...payload, dateUpdated: now().toISOString(), userIdUpdated: currentUser?.uid || FirestoreModels.NO_ID })
+        const entityUpdated = this._blankFn({
+            ...current,
+            ...payload,
+            dateUpdated: now().toISOString(),
+            userIdUpdated: currentUser?.uid || FirestoreModels.NO_ID
+        })
 
         await this._validationFns.update(entityUpdated, currentUser)
         await firestore()
@@ -182,7 +184,16 @@ export class FirebaseModelFns<T extends FirestoreModels.BaseRecord> {
     }
 
     update = (currentUser: FbAuthUser | undefined, partial: Partial<T>): Promise<T> => this._update(currentUser, partial, false)
-    updateOrCreate = (currentUser: FbAuthUser | undefined, partial: Partial<T>): Promise<T> => this._update(currentUser, partial, true)
+    updateOrCreate = (currentUser: FbAuthUser | undefined, partial: Partial<T>): Promise<T> => {
+        // get a new id if none provided. We will create this record now.
+        if (!partial.id) {
+            partial.id = firestore()
+                .collection(this._collectionName)
+                .doc().id
+        }
+
+        return this._update(currentUser, partial, true)
+    }
 
     remove = async (currentUser: FbAuthUser | undefined, id: string): Promise<T> => {
         const entityRemoved = await this.get(currentUser, id)
