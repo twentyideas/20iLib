@@ -209,7 +209,7 @@ const helpers = {
         generateReleaseNotes(versionNumber?: string) {
             try {
                 if (!versionNumber) {
-                    runCommand(`gren release --tags=${versionNumber} --override --data-source=commits`)
+                    runCommand(`gren release --tags=${versionNumber} --override --data-source=commits`, { env: process.env })
                 } else {
                     runCommand(`gren release --tags=all --override --data-source=commits`)
                 }
