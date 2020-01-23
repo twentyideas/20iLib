@@ -6,7 +6,6 @@ import * as _file from "./helpers/file"
 import * as _string from "./helpers/string"
 import * as _env from "./helpers/env"
 
-
 export const git = {
     cleanLocalBranches,
     getCurrentGitBranch

@@ -12,52 +12,51 @@ function notEmpty<TValue>(value: TValue | null | undefined): value is TValue {
     return value !== null && value !== undefined
 }
 
-
 function filesInDirectory(dir: string, recursive = true, acc: string[] = []) {
     try {
-        const files = fs.readdirSync(dir);
-        for (const i in files){
+        const files = fs.readdirSync(dir)
+        for (const i in files) {
             const name = [dir, files[i]].join(path.sep)
-            if (fs.statSync(name).isDirectory()){
+            if (fs.statSync(name).isDirectory()) {
                 if (recursive) {
-                    filesInDirectory(name, recursive, acc);
+                    filesInDirectory(name, recursive, acc)
                 }
             } else {
-                acc.push(name);
+                acc.push(name)
             }
         }
-        return acc;
-    } catch(e) {
+        return acc
+    } catch (e) {
         return acc
     }
 }
 
 function dirsInDirectory(dir: string, recursive = true, acc: string[] = []) {
     try {
-        const dirs = fs.readdirSync(dir);
-        for (const i in dirs){
+        const dirs = fs.readdirSync(dir)
+        for (const i in dirs) {
             const name = [dir, dirs[i]].join(path.sep)
-            if (fs.statSync(name).isDirectory()){
+            if (fs.statSync(name).isDirectory()) {
                 acc.push(name)
                 if (recursive) {
-                    dirsInDirectory(name, true, acc);
+                    dirsInDirectory(name, true, acc)
                 }
             }
         }
-        return acc;
-    } catch(e) {
+        return acc
+    } catch (e) {
         return acc
     }
 }
 
-function writeFile(params: { srcFile?:string, data?:string, dest:string }) {
+function writeFile(params: { srcFile?: string; data?: string; dest: string }) {
     try {
         const { srcFile, data, dest } = params
         const raw = srcFile ? fs.readFileSync(srcFile) : data
-        const output = typeof raw === 'string' ? raw : JSON.stringify(raw, null, 4)
+        const output = typeof raw === "string" ? raw : JSON.stringify(raw, null, 4)
         mkdirp.sync(path.dirname(dest))
         fs.writeFileSync(dest, output)
-    } catch(e) {
+    } catch (e) {
         throw e
     }
 }
@@ -65,7 +64,6 @@ function writeFile(params: { srcFile?:string, data?:string, dest:string }) {
 function createDir(dir: string) {
     mkdirp.sync(dir)
 }
-
 
 function copyDir(srcDir: string, destDir: string, keepExisingInDest = false) {
     return fs.copySync(srcDir, destDir)
@@ -79,18 +77,20 @@ function removeDir(dir: string) {
     if (!fs.existsSync(dir)) {
         return
     }
-    
+
     try {
-        fs.readdirSync(dir).forEach((file) => {
+        fs.readdirSync(dir).forEach(file => {
             const curPath = [dir, file].join(path.sep)
-            if (fs.lstatSync(curPath).isDirectory()) { // recurse
-                removeDir(curPath);
-            } else { // delete file
-                fs.unlinkSync(curPath);
+            if (fs.lstatSync(curPath).isDirectory()) {
+                // recurse
+                removeDir(curPath)
+            } else {
+                // delete file
+                fs.unlinkSync(curPath)
             }
-        });
-        fs.rmdirSync(dir);
-    } catch(e) {
+        })
+        fs.rmdirSync(dir)
+    } catch (e) {
         throw e
     }
 }
@@ -100,7 +100,7 @@ function removeFile(location: string) {
         return
     }
 
-    if(fs.lstatSync(location).isFile()) {
+    if (fs.lstatSync(location).isFile()) {
         fs.unlinkSync(location)
     } else {
         throw new Error(`${location} is not a file`)
@@ -108,7 +108,7 @@ function removeFile(location: string) {
 }
 
 function readFile(filePath: string) {
-    return fs.readFileSync(filePath, 'utf8')
+    return fs.readFileSync(filePath, "utf8")
 }
 
 function getFileOrFolderName(location: string) {
@@ -118,7 +118,7 @@ function getFileOrFolderName(location: string) {
         return ""
     }
 
-    return lodash.first(lodash.compact(last.split('.')).filter(notEmpty))
+    return lodash.first(lodash.compact(last.split(".")).filter(notEmpty))
 }
 
 function getTemplate(templatePath: string, withParams: TemplateObj) {
@@ -136,11 +136,10 @@ function getTemplate(templatePath: string, withParams: TemplateObj) {
     return file
 }
 
-
 function dirExists(dir: string) {
     try {
         return fs.statSync(dir).isDirectory()
-    } catch(e) {
+    } catch (e) {
         return false
     }
 }
@@ -148,12 +147,10 @@ function dirExists(dir: string) {
 function fileExists(file: string) {
     try {
         return fs.statSync(file).isFile()
-    } catch(e) {
+    } catch (e) {
         return false
     }
 }
-
-
 
 export {
     filesInDirectory,

@@ -1,1 +1,1 @@
-declare module "exec-sh";
+declare module "exec-sh"

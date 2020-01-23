@@ -45,6 +45,7 @@ function generateMasterStoreFile() {
     const { MODULES_PATH, STORE_PATH, STORE_TEMPLATE_PATH } = getPaths()
 
     const modulesFileNames = lib.helpers.file.filesInDirectory(MODULES_PATH, false)
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const moduleClassNames = modulesFileNames.map(m => lodash.last(m.split(path.sep))!.replace(".tsx", "")).filter(n => n !== "Base")
     const modulePropNames = moduleClassNames.map(lodash.camelCase)
 

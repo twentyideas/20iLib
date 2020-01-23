@@ -33,7 +33,7 @@ async function start(firstRun = true) {
         await generateComponent()
         await start(false)
     } else if (answer === TYPES.STORE_MODULE) {
-        await generateStoreModule();
+        await generateStoreModule()
         await start(false)
     } else {
         console.log(`\nTy for using the generator!`)

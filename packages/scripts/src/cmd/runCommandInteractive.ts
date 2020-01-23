@@ -4,7 +4,7 @@ export default async function runCommandInteractive(command: string, params = []
     try {
         const out = await execSh.promise(command, params)
         return out.stdout || out.stderr
-    } catch(e) {
+    } catch (e) {
         throw e.stderr || e.stdout
     }
 }

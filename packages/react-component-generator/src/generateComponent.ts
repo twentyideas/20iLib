@@ -65,6 +65,7 @@ function generate(name: string, type: string, directory: string) {
     })
 }
 
+// eslint-disable-next-line @typescript-eslint/interface-name-prefix
 interface IAnswers {
     type: string
     category: string
