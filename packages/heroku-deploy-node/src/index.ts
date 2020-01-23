@@ -159,7 +159,8 @@ const helpers = {
                             "adm-zip": "^0.4.13"
                         },
                         scripts: {
-                            build: "node extractDeployment",
+                            // rebuild packages that need it!!
+                            build: "node extractDeployment && cd out && npm run rebuild",
                             start: "cd out && npm run start"
                         }
                     },
