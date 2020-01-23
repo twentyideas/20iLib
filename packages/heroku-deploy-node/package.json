@@ -1,6 +1,6 @@
 {
     "name": "@20i/heroku-deploy-node",
-    "version": "1.0.28",
+    "version": "1.0.29",
     "description": "Inquirier script to deploy to heroku",
     "main": "./dist/index.js",
     "scripts": {
