@@ -1,6 +1,6 @@
 {
     "name": "@20i/heroku-deploy-node",
-    "version": "1.0.23",
+    "version": "1.0.24",
     "description": "Inquirier script to deploy to heroku",
     "main": "./dist/index.js",
     "scripts": {
@@ -11,7 +11,7 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
-        "@20i/scripts": "^1.0.7",
+        "@20i/scripts": "^1.0.24",
         "adm-zip": "^0.4.13",
         "env-paths": "^2.2.0",
         "inquirer": "^7.0.1",
