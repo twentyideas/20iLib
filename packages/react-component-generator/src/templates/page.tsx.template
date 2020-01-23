@@ -22,7 +22,7 @@ class %name%State {
 const %name%: React.FC<RouteComponentProps<%name%Props>> = props => {
     const classes = useStyles()
     const rc = useRootClasses()
-    const state = React.useRef(new %name%State).current
+    const state = React.useRef(new %name%State()).current
 
     return (
         <div className={classes.%className%}>
