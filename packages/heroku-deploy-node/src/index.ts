@@ -212,7 +212,7 @@ const helpers = {
                 if (!versionNumber) {
                     runCommand(`gren release --tags=${versionNumber} --override --data-source=commits`, { env: process.env })
                 } else {
-                    runCommand(`gren release --tags=all --override --data-source=commits`)
+                    runCommand(`gren release --tags=all --override --data-source=commits`, { env: process.env })
                 }
             } catch (e) {
                 console.log("Make sure that github-release-notes is installed: https://www.npmjs.com/package/github-release-notes")
