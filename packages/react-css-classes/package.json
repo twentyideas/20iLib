@@ -1,6 +1,6 @@
 {
     "name": "@20i/react-css-classes",
-    "version": "1.0.32",
+    "version": "1.0.33",
     "description": "Provides a react hook that gives back a lot of useful CSS classes",
     "author": "wolf",
     "license": "ISC",
