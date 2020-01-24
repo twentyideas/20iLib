@@ -7,7 +7,7 @@ Using a MUI theme, provides a lot of CSS classes to make writing React component
 ```
 // filename: style.ts
 
-import { createMuiTheme, makeStyles } from "@material-ui/core/styles"
+import { createMuiTheme } from "@material-ui/core/styles"
 import { useClasses } from "@20i/react-css-classes"
 
 export const theme = createMuiTheme({
@@ -32,7 +32,7 @@ import React from "react"
 const MyReactComponent = () => {
     const rc = useReactCSSClasses()
 
-    // use whatever classes you have!
+    // use whatever classes you want. There's a ton!!
     const className = rc.bgPrimaryDark
 
     return (
@@ -47,14 +47,14 @@ const MyReactComponent = () => {
 
 There's a lot of helper CSS classes. You can view them by category.
 
-[Animation](./src/classes/Animation.ts)
-[Border](./src/classes/Border.ts)
-[Color](./src/classes/Color.ts)
-[Flex](./src/classes/Flex.ts)
-[Handy](./src/classes/Handy.ts)
-[MarginPadding](./src/classes/MarginPadding.ts)
-[Opacity](./src/classes/Opacity.ts)
-[Positional](./src/classes/Positional.ts)
-[Shadow](./src/classes/Shadow.ts)
-[TextAlignment](./src/classes/TextAlignment.ts)
-[Transform](./src/classes/Transform.ts)
+[Animation](https://github.com/twentyideas/20iLib/blob/master/packages/react-css-classes/src/classes/Animation.ts)
+[Border](https://github.com/twentyideas/20iLib/blob/master/packages/react-css-classes/src/classes/Border.ts)
+[Color](https://github.com/twentyideas/20iLib/blob/master/packages/react-css-classes/src/classes/Color.ts)
+[Flex](https://github.com/twentyideas/20iLib/blob/master/packages/react-css-classes/src/classes/Flex.ts)
+[Handy](https://github.com/twentyideas/20iLib/blob/master/packages/react-css-classes/src/classes/Handy.ts)
+[MarginPadding](https://github.com/twentyideas/20iLib/blob/master/packages/react-css-classes/src/classes/MarginPadding.ts)
+[Opacity](https://github.com/twentyideas/20iLib/blob/master/packages/react-css-classes/src/classes/Opacity.ts)
+[Positional](https://github.com/twentyideas/20iLib/blob/master/packages/react-css-classes/src/classes/Positional.ts)
+[Shadow](https://github.com/twentyideas/20iLib/blob/master/packages/react-css-classes/src/classes/Shadow.ts)
+[TextAlignment](https://github.com/twentyideas/20iLib/blob/master/packages/react-css-classes/src/classes/TextAlignment.ts)
+[Transform](https://github.com/twentyideas/20iLib/blob/master/packages/react-css-classes/src/classes/Transform.ts)
