@@ -9,9 +9,11 @@
         "build": "npx tsc",
         "dev": "npx tsc -w"
     },
-    "dependencies": {
+    "peerDependencies": {
         "@material-ui/core": "^4.9.0",
-        "@material-ui/styles": "^4.9.0",
+        "@material-ui/styles": "^4.9.0"
+    },
+    "dependencies": {
         "jss": "^10.0.3",
         "jss-plugin-global": "^10.0.3"
     }
