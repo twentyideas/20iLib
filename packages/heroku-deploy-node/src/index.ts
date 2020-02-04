@@ -229,10 +229,10 @@ const helpers = {
     }
 }
 
-export async function herokuDeployNode({ remoteIds, projectName, buildDirs, buildFiles, buildRoot, packageJsons }: DeployParams) {
+export async function herokuDeployNode({ remoteIds, projectName, buildDirs, buildFiles, buildRoot, packageJsons }: DeployParams): Promise<string[]> {
     if (!remoteIds.length) {
         console.log("Please provide heroku remoteIds to deploy")
-        return
+        return []
     }
 
     const answers = await inquirer.prompt([
@@ -255,7 +255,7 @@ export async function herokuDeployNode({ remoteIds, projectName, buildDirs, buil
     const { chosenRemoteIds, releaseType } = helpers.ToInqurierAnswers(answers)
     if (!chosenRemoteIds.length) {
         console.log("Exiting early because no remote chosen")
-        return
+        return []
     }
 
     const newVersion = releaseType !== ReleaseType.NONE ? helpers.files.getNewVersion(buildRoot, releaseType) : ""
@@ -289,4 +289,5 @@ export async function herokuDeployNode({ remoteIds, projectName, buildDirs, buil
     }
 
     console.log("Deploy completed...")
+    return remoteIds
 }
