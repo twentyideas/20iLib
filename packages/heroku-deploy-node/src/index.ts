@@ -289,5 +289,5 @@ export async function herokuDeployNode({ remoteIds, projectName, buildDirs, buil
     }
 
     console.log("Deploy completed...")
-    return remoteIds
+    return chosenRemoteIds
 }
