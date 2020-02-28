@@ -2,6 +2,13 @@
 
 Using a MUI theme, provides a lot of CSS classes to make writing React components quicker!
 
+
+#### Peer Deps
+```
+"@material-ui/core": "^4.9.0"
+"@material-ui/styles": "^4.9.0"
+```
+
 ### Init
 
 ```
