@@ -3,7 +3,7 @@ declare module "timesync-fork-wolf" {
 
     interface TsInitParams {
         delay?: number
-        interval?: number
+        interval?: number | null
         now?: () => number
         peers?: string | string[]
         repeat?: number

@@ -8,18 +8,53 @@ export class TimeClient {
     offsetMs = 0
     timeSyncInstance?: TimeSync.TimeSyncInstance
 
-    init = (timesyncEndpoint = "https://twentyideas-timesync.herokuapp.com/timesync", interval?: number) => {
+    server = ""
+
+    syncing = false
+
+    init = (timesyncEndpoint = "https://twentyideas-timesync.herokuapp.com/timesync", interval?: number | null, delay = 1000) => {
         return new Promise(resolve => {
-            const i = interval && interval > 0 ? Math.max(10000, interval) : undefined
+            const i = interval && interval > 0 ? Math.max(10000, interval) : null
             if (i && i !== interval) {
                 console.log(`Timesync interval to ${i} ms. That is the minimum`)
             }
 
-            this.timeSyncInstance = i ? TimeSync.create({ server: timesyncEndpoint, interval: i }) : TimeSync.create({ server: timesyncEndpoint })
+            let changes = 0
+
+            this.timeSyncInstance = i ? TimeSync.create({ server: timesyncEndpoint, interval: i, delay }) : TimeSync.create({ server: timesyncEndpoint, delay })
             this.timeSyncInstance.on("change", (offset: number) => {
+                changes += 1
                 this.offsetMs = offset
                 console.log(`updated time offset to: ${this.offsetMs} ms`)
+                if (changes >= 2) {
+                    resolve()
+                }
+            })
+        })
+    }
+
+    sync = (timesyncEndpoint = "https://twentyideas-timesync.herokuapp.com/timesync", delay = 1000) => {
+        return new Promise(resolve => {
+            if (this.syncing) {
                 resolve()
+                return
+            }
+
+            let changes = 0
+            const timeSyncInstance = TimeSync.create({ server: timesyncEndpoint, interval: null, delay })
+            this.syncing = true
+            timeSyncInstance.sync()
+            timeSyncInstance.on("change", (offset: number) => {
+                changes += 1
+                this.offsetMs = offset
+                console.log(`updated time offset to: ${this.offsetMs} ms`)
+                if (changes >= 2) {
+                    this.syncing = false
+
+                    // destroy instance on resolve to kill the connection
+                    timeSyncInstance.destroy()
+                    resolve()
+                }
             })
         })
     }
