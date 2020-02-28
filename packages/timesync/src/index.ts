@@ -12,8 +12,8 @@ export class TimeClient {
 
     syncing = false
 
-    init = (timesyncEndpoint = "https://twentyideas-timesync.herokuapp.com/timesync", interval?: number | null, delay = 1000) => {
-        return new Promise(resolve => {
+    init = (timesyncEndpoint = "https://twentyideas-timesync.herokuapp.com/timesync", interval?: number | null, delay = 1000, timeout = 10000) => {
+        return new Promise((resolve, reject) => {
             const i = interval && interval > 0 ? Math.max(10000, interval) : null
             if (i && i !== interval) {
                 console.log(`Timesync interval to ${i} ms. That is the minimum`)
@@ -21,7 +21,10 @@ export class TimeClient {
 
             let changes = 0
 
-            this.timeSyncInstance = i ? TimeSync.create({ server: timesyncEndpoint, interval: i, delay }) : TimeSync.create({ server: timesyncEndpoint, delay })
+            this.timeSyncInstance = i
+                ? TimeSync.create({ server: timesyncEndpoint, interval: i, delay, timeout })
+                : TimeSync.create({ server: timesyncEndpoint, delay, timeout })
+
             this.timeSyncInstance.on("change", (offset: number) => {
                 changes += 1
                 this.offsetMs = offset
@@ -30,18 +33,25 @@ export class TimeClient {
                     resolve()
                 }
             })
+            this.timeSyncInstance.on("error", () => {
+                if (this.timeSyncInstance) {
+                    this.timeSyncInstance.destroy()
+                }
+                this.timeSyncInstance = undefined
+                reject()
+            })
         })
     }
 
-    sync = (timesyncEndpoint = "https://twentyideas-timesync.herokuapp.com/timesync", delay = 1000) => {
-        return new Promise(resolve => {
+    sync = (timesyncEndpoint = "https://twentyideas-timesync.herokuapp.com/timesync", delay = 1000, timeout = 10000) => {
+        return new Promise((resolve, reject) => {
             if (this.syncing) {
                 resolve()
                 return
             }
 
             let changes = 0
-            const timeSyncInstance = TimeSync.create({ server: timesyncEndpoint, interval: null, delay })
+            const timeSyncInstance = TimeSync.create({ server: timesyncEndpoint, interval: null, delay, timeout })
             this.syncing = true
             timeSyncInstance.sync()
             timeSyncInstance.on("change", (offset: number) => {
@@ -55,6 +65,11 @@ export class TimeClient {
                     timeSyncInstance.destroy()
                     resolve()
                 }
+            })
+            timeSyncInstance.on("error", () => {
+                this.syncing = false
+                timeSyncInstance.destroy()
+                reject()
             })
         })
     }
