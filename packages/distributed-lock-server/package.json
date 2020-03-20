@@ -1,0 +1,32 @@
+{
+    "name": "@20i/distributed-lock-server",
+    "version": "1.0.35",
+    "description": "20i distributed lock server code. This is deployed to aws",
+    "main": "src/main.ts",
+    "author": "wolf",
+    "license": "ISC",
+    "private": true,
+    "scripts": {
+        "build": "npx tsc",
+        "migrate": "node migrate",
+        "createmigration": "node migrate/helpers/createmigration",
+        "createarchive": "node createDeployableArchive",
+        "start": "npm run migrate && node ./build/main.js",
+        "dev": "nodemon",
+        "lint": "eslint --fix \"src/**/*.{js,ts,jsx,tsx}\""
+    },
+    "dependencies": {
+        "adm-zip": "^0.4.13",
+        "body-parser": "^1.19.0",
+        "cors": "^2.8.5",
+        "db-migrate": "^0.11.6",
+        "db-migrate-pg": "^1.0.0",
+        "db-migrate-shared": "^1.2.0",
+        "dotenv": "^8.2.0",
+        "express": "^4.17.1",
+        "lodash": "^4.17.15",
+        "moment": "^2.24.0",
+        "pg": "^7.18.2",
+        "uuid": "^7.0.2"
+    }
+}
