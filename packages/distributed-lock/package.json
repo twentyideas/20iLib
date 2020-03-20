@@ -1,0 +1,17 @@
+{
+    "name": "@20i/distributed-lock",
+    "version": "1.0.37",
+    "description": "Small library to sync time to a time server",
+    "main": "./dist/index.js",
+    "scripts": {
+        "build": "npx tsc",
+        "dev": "npx tsc -w",
+        "lint": "eslint --fix \"src/**/*.{js,ts,jsx,tsx}\""
+    },
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "axios": "^0.19.2",
+        "moment": "^2.24.0"
+    }
+}
