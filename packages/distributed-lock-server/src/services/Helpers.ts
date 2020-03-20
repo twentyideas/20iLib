@@ -1,5 +1,50 @@
 import { database, ProjectEntry } from "../Pg"
-import { keys } from "lodash"
+import { keys, values, sortBy } from "lodash"
+
+interface ApiKeyLocalMap {
+    [apiKey: string]: {
+        apiKey: string
+        dateStored: string
+        value: ProjectEntry
+    }
+}
+class ApiKeyLocalCache {
+    size = 0
+    maxSize: number
+    map: ApiKeyLocalMap = {}
+
+    constructor(maxSize = 1000) {
+        if (maxSize > 0) {
+            this.maxSize = maxSize
+        } else {
+            this.maxSize = 1000
+        }
+    }
+
+    add = (apiKey: string, value: ProjectEntry) => {
+        if (this.size >= this.maxSize) {
+            // remove the earliest one we have stored
+            const [oldest] = sortBy(values(this.map), i => i.dateStored)
+            this.remove(oldest.apiKey)
+        }
+
+        this.map[apiKey] = {
+            apiKey,
+            value,
+            dateStored: new Date().toISOString()
+        }
+        this.size += 1
+    }
+
+    remove = (apiKey: string) => {
+        if (this.map[apiKey]) {
+            delete this.map[apiKey]
+            this.size -= 1
+        }
+    }
+}
+
+export const apiKeyLocalCache = new ApiKeyLocalCache()
 
 export function validateAdminKey(adminKey: string) {
     if (!adminKey) {
@@ -12,6 +57,11 @@ export function validateAdminKey(adminKey: string) {
 }
 
 export async function getProjectByApiKey(apiKey: string): Promise<ProjectEntry | undefined> {
+    const cachedEntry = apiKeyLocalCache.map[apiKey]
+    if (cachedEntry) {
+        return cachedEntry.value
+    }
+
     const blankProjectEntry: ProjectEntry = {
         id: 0,
         name: "",
@@ -26,6 +76,9 @@ export async function getProjectByApiKey(apiKey: string): Promise<ProjectEntry |
         values: [apiKey]
     }
 
-    const result = await database.query(query)
-    return result.rows[0]
+    const rawResult = await database.query(query)
+    const [result] = rawResult.rows
+
+    apiKeyLocalCache.add(apiKey, result)
+    return result
 }

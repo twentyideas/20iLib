@@ -1,6 +1,6 @@
 import BaseController from "./BaseController"
 import { Projects, Locks, ApiKeys } from "../Pg"
-import { validateAdminKey } from "../services/Helpers"
+import { validateAdminKey, apiKeyLocalCache } from "../services/Helpers"
 
 interface CreateProjectParams {
     name: string
@@ -47,7 +47,8 @@ export class ProjectController extends BaseController {
                     await Locks.delete({ project_id: projectEntry.id })
 
                     // kill all api keys
-                    await ApiKeys.delete({ project_id: projectEntry.id })
+                    const deletedKeys = await ApiKeys.delete({ project_id: projectEntry.id })
+                    deletedKeys.forEach(row => apiKeyLocalCache.remove(row.api_key))
 
                     // kill project
                     const result = await Projects.deleteById(projectEntry.id)

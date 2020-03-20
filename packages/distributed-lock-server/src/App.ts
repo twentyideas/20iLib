@@ -13,6 +13,10 @@ export default class App {
         this.port = port
         middlewares.forEach(middleware => this.app.use(middleware))
         controllers.forEach(controller => this.app.use("/api/", controller.router))
+
+        this.app.use("/", (req, res) => {
+            res.status(200).send("You have reached 20i distributed lock server")
+        })
     }
 
     listen = () => {

@@ -1,4 +1,4 @@
-import { Pool } from "pg"
+import { Pool, PoolClient } from "pg"
 import { keys, get, pickBy, isUndefined } from "lodash"
 
 export enum TABLE {
@@ -28,7 +28,13 @@ export interface ApiKeyEntry extends BaseEntry {
     api_key: string
 }
 
-export const database = new Pool()
+const pool = new Pool()
+
+export let database: PoolClient
+
+export async function connect() {
+    database = await pool.connect()
+}
 
 function Sanitize<K extends object>(obj: K): Partial<K> {
     return pickBy(obj, v => !isUndefined(v))

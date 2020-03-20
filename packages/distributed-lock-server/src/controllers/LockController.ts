@@ -6,6 +6,7 @@ interface CreateLockParams {
     apiKey: string
     lockName: string
     expirationTimeMs?: number
+    // DEBUG?: string
 }
 
 interface DeleteLockParams {
@@ -42,6 +43,7 @@ export class LockController extends BaseController {
             {
                 name: "create",
                 fn: async (input: CreateLockParams, exits) => {
+                    // console.log(`get lock ${input.DEBUG} at ${new Date().toLocaleTimeString()}:${new Date().getMilliseconds()}`)
                     const project = await getProjectByApiKey(input.apiKey)
                     if (!project) {
                         return exits.Error404_NOT_FOUND(`No project found with the api key provided`)

@@ -1,7 +1,7 @@
 import { v4 as uuid } from "uuid"
 import BaseController from "./BaseController"
 import { ApiKeys, Projects } from "../Pg"
-import { validateAdminKey } from "../services/Helpers"
+import { validateAdminKey, apiKeyLocalCache } from "../services/Helpers"
 
 interface CreateApiKeyParams {
     projectId?: number
@@ -53,6 +53,7 @@ export class ApiKeyController extends BaseController {
 
                     const entry = await ApiKeys.findOneErrorOnNotFound({ id: input.id, api_key: input.apiKey })
                     await ApiKeys.deleteById(entry.id)
+                    apiKeyLocalCache.remove(entry.api_key)
                     return exits.OK(`Deleted api key`)
                 }
             },
@@ -67,6 +68,8 @@ export class ApiKeyController extends BaseController {
 
                     const project = await Projects.findOneErrorOnNotFound({ id: input.projectId, name: input.projectName })
                     const deletedRows = await ApiKeys.delete({ project_id: project.id })
+
+                    deletedRows.forEach(row => apiKeyLocalCache.remove(row.api_key))
                     return exits.OK(`${deletedRows.length} api keys deleted for project: ${project.name}`)
                 }
             }
