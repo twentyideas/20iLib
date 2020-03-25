@@ -22,8 +22,13 @@ class %name%State {
 const %name%: React.FC<RouteComponentProps<%name%Props>> = props => {
     const classes = useStyles()
     const rc = useRootClasses()
-    const state = React.useRef(new %name%State()).current
+    const [componentState, setComponentState] = React.useState<%name%State | undefined>()
+    React.useEffect(() => setComponentState(new %name%State()), [])
+    if (!componentState) {
+        return <div className={classes.%className%} />
+    }
 
+    // your code here
     return (
         <div className={classes.%className%}>
             %name% Page

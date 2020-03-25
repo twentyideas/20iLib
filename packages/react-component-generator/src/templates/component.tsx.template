@@ -29,7 +29,11 @@ const %name%: React.FC<%name%Props> = props => {
     const className = clsx(classes.%className%, props.className)
     const [componentState, setComponentState] = React.useState<%name%State | undefined>()
     React.useEffect(() => setComponentState(new %name%State()), [])
+    if (!componentState) {
+        return <div className={className} style={props.style} />
+    }
 
+    // your code here
     return (
         <div className={className} style={props.style}>
             {props.children}
