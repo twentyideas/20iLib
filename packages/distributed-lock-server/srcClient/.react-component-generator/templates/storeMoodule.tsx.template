@@ -1,0 +1,8 @@
+import { observable, computed, action } from "mobx"
+import Base from "./Base"
+import { Store } from "../Store"
+
+export default class %name% extends Base {
+   
+}
+

@@ -1,0 +1,76 @@
+{
+    "name": "react-starter-app",
+    "version": "0.1.0",
+    "private": true,
+    "main": "src/index.tsx",
+    "dependencies": {
+        "@20i/react-css-classes": "^1.0.36",
+        "@craco/craco": "^5.5.0",
+        "@material-ui/core": "^4.4.2",
+        "@material-ui/styles": "^4.4.1",
+        "@reach/router": "^1.3.3",
+        "axios": "^0.19.2",
+        "clsx": "^1.1.0",
+        "lodash": "^4.17.15",
+        "mkdirp": "^0.5.1",
+        "mobx": "^5.15.4",
+        "mobx-react": "^6.1.8",
+        "mousetrap": "^1.6.5",
+        "react": "^16.9.0",
+        "react-dom": "^16.9.0",
+        "react-json-tree": "^0.11.2",
+        "react-scripts": "3.1.2",
+        "ts-enum-util": "^4.0.1"
+    },
+    "scripts": {
+        "start": "craco start",
+        "build": "craco build && node moveWebpackBuildToServer",
+        "eject": "react-scripts eject",
+        "generator": "npx @20i/react-component-generator",
+        "lint": "eslint --fix \"src/**/*.{js,ts,jsx,tsx}\""
+    },
+    "browserslist": {
+        "production": [
+            ">0.2%",
+            "not dead",
+            "not op_mini all"
+        ],
+        "development": [
+            "last 1 chrome version",
+            "last 1 firefox version",
+            "last 1 safari version"
+        ]
+    },
+    "devDependencies": {
+        "@20i/react-component-generator": "^1.0.39",
+        "@20i/scripts": "^1.0.24",
+        "@types/lodash": "^4.14.149",
+        "@types/material-ui": "^0.21.7",
+        "@types/mousetrap": "^1.6.3",
+        "@types/node": "13.7.7",
+        "@types/reach__router": "^1.3.0",
+        "@types/react": "16.9.2",
+        "@types/react-dom": "16.9.0",
+        "@types/react-json-tree": "^0.6.11",
+        "@types/react-redux": "^7.1.2",
+        "@types/react-router-dom": "^4.3.5",
+        "babel-plugin-react-directives": "^1.0.1",
+        "eslint": "^6.8.0",
+        "eslint-config-prettier": "^6.4.0",
+        "eslint-config-typescript": "^3.0.0",
+        "eslint-loader": "^2.1.1",
+        "eslint-plugin-prettier": "^3.1.1",
+        "eslint-plugin-react-directives": "^1.0.1",
+        "husky": "^4.2.3",
+        "prettier": "^1.18.2",
+        "typescript": "3.8.3"
+    },
+    "nohoist": [
+        "**/babel-preset-react-app/@babel/runtime"
+    ],
+    "husky": {
+        "hooks": {
+            "pre-commit": "npm run lint"
+        }
+    }
+}

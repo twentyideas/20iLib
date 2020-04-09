@@ -1,6 +1,7 @@
+import * as path from "path"
 import express from "express"
 import BaseController from "./controllers/BaseController"
-import { database } from "./Pg"
+import * as mimes from "./services/mimes"
 
 type MiddleWareFn = (req: express.Request, res: express.Response, next: () => void) => void
 
@@ -14,9 +15,10 @@ export default class App {
         middlewares.forEach(middleware => this.app.use(middleware))
         controllers.forEach(controller => this.app.use("/api/", controller.router))
 
-        this.app.use("/", (req, res) => {
-            res.status(200).send("You have reached 20i distributed lock server")
-        })
+        /* serve static files */
+        express.static.mime.define(mimes.typeMap)
+        this.app.use(express.static(path.resolve(__dirname, "./buildSite")))
+        this.app.get("*", (req, res) => res.sendFile(path.resolve(__dirname, "./buildSite/index.html")))
     }
 
     listen = () => {

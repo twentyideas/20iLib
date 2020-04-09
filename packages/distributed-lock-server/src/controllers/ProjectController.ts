@@ -13,6 +13,10 @@ interface DeleteProjectParams {
     adminKey: string
 }
 
+interface GetProjectsParams {
+    adminKey: string
+}
+
 export class ProjectController extends BaseController {
     path = "/project"
 
@@ -53,6 +57,19 @@ export class ProjectController extends BaseController {
                     // kill project
                     const result = await Projects.deleteById(projectEntry.id)
                     return exits.OK(result)
+                }
+            },
+            {
+                name: "get",
+                fn: async (input: GetProjectsParams, exits) => {
+                    try {
+                        validateAdminKey(input.adminKey)
+                    } catch (e) {
+                        return exits.Error401_UNAUTHORIZED(e.message)
+                    }
+
+                    const allProjects = await Projects.find({})
+                    return exits.OK(allProjects.map(project => project.name))
                 }
             }
         ]

@@ -1,0 +1,13 @@
+{
+    "COMPONENT_TEMPLATE_PATH": ".react-component-generator/templates/component.tsx.template",
+    "PAGE_TEMPLATE_PATH": ".react-component-generator/templates/page.tsx.template",
+    "STORE_MODULE_TEMPLATE_PATH": ".react-component-generator/templates/storeModule.tsx.template",
+    "STORE_TEMPLATE_PATH": ".react-component-generator/templates/store.tsx.template",
+    "PATHS": {
+        "ATOMS": "src/components/atoms",
+        "MOLECULES": "src/components/molecules",
+        "ORGANISMS": "src/components/organisms",
+        "PAGES": "src/pages",
+        "STORE_MODULES": "src/store/modules"
+    }
+}

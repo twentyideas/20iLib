@@ -4,7 +4,7 @@ import Firebase, { User as FbAuthUser } from "firebase"
 export namespace FirestoreModels {
     export const NO_ID = ""
     export type FbQuery = [string | Firebase.firestore.FieldPath, Firebase.firestore.WhereFilterOp, any]
-    
+
     export interface BaseRecord {
         id: string
         dateCreated: string

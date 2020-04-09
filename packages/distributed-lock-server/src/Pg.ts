@@ -138,6 +138,11 @@ class ModelFunctions<T extends BaseEntry> {
     find = async (query: Partial<T>): Promise<T[]> => {
         const { templatePropValues, values, table } = this
         const queryObj = Sanitize(query)
+        if (!keys(queryObj).length) {
+            const result = await database.query({ text: `SELECT * FROM ${table}` })
+            return result.rows
+        }
+
         const result = await database.query({
             text: `SELECT * FROM ${table} WHERE ${templatePropValues(queryObj, " AND ")}`,
             values: values(queryObj)

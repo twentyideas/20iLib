@@ -8,9 +8,11 @@
     "private": true,
     "scripts": {
         "build": "npx tsc",
+        "buildclient": "cd srcClient && npm run build",
         "migrate": "node migrate",
+        "startclient": "cd srcClient && npm start",
         "createmigration": "node migrate/helpers/createmigration",
-        "createarchive": "node createDeployableArchive",
+        "createarchive": "npm run build && npm run buildclient && node createDeployableArchive",
         "start": "npm run migrate && node ./build/main.js",
         "dev": "nodemon",
         "lint": "eslint --fix \"src/**/*.{js,ts,jsx,tsx}\""

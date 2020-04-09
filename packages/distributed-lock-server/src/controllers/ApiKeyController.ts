@@ -21,6 +21,12 @@ interface DeleteAllParams {
     adminKey: string
 }
 
+interface GetParams {
+    projectId?: number
+    projectName?: string
+    adminKey: string
+}
+
 export class ApiKeyController extends BaseController {
     path = "/api-key"
 
@@ -71,6 +77,20 @@ export class ApiKeyController extends BaseController {
 
                     deletedRows.forEach(row => apiKeyLocalCache.remove(row.api_key))
                     return exits.OK(`${deletedRows.length} api keys deleted for project: ${project.name}`)
+                }
+            },
+            {
+                name: "get-by-project",
+                fn: async (input: GetParams, exits) => {
+                    try {
+                        validateAdminKey(input.adminKey)
+                    } catch (e) {
+                        return exits.Error401_UNAUTHORIZED(e.message)
+                    }
+
+                    const project = await Projects.findOneErrorOnNotFound({ id: input.projectId, name: input.projectName })
+                    const apiKeys = await ApiKeys.find({ project_id: project.id })
+                    return exits.OK(apiKeys.map(key => key.api_key))
                 }
             }
         ]

@@ -3,6 +3,7 @@
     "private": true,
     "devDependencies": {
         "@types/adm-zip": "^0.4.32",
+        "@types/axios": "^0.14.0",
         "@types/cors": "^2.8.6",
         "@types/env-paths": "^2.1.0",
         "@types/express": "^4.17.2",
@@ -32,6 +33,7 @@
         "dev": "lerna run dev --stream --parallel",
         "devlock": "cd ./packages/distributed-lock && npm run dev",
         "devlockserver": "cd ./packages/distributed-lock-server && npm run dev",
+        "devlockclient": "cd ./packages/distributed-lock-server/srcClient && npm start",
         "build": "lerna bootstrap && lerna run build",
         "publish": "npm run build && lerna publish",
         "lint": "lerna run lint --stream --parallel",

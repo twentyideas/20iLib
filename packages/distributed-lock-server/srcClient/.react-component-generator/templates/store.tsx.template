@@ -1,0 +1,18 @@
+%imports%
+
+export class Store {
+    %properties%
+
+    constructor() {
+        %constructor%
+    }
+
+    async init() {
+        const promises = [
+            %init%
+        ]
+        return Promise.all(promises)
+    }
+}
+
+export default new Store();
