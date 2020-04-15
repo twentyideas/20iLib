@@ -1,7 +1,6 @@
-import { makeStyles, Theme as MuiTheme } from "@material-ui/core/styles"
+import { makeStyles, Theme as MuiTheme } from "@material-ui/core"
 import jss from "jss"
 import jssPluginGlobal from "jss-plugin-global"
-
 import Animation from "./classes/Animation"
 import Border from "./classes/Border"
 import Color from "./classes/Color"
@@ -11,8 +10,8 @@ import MarginPadding from "./classes/MarginPadding"
 import Opacity from "./classes/Opacity"
 import Positional from "./classes/Positional"
 import Shadow from "./classes/Shadow"
-import Transform from "./classes/Transform"
 import TextAlignment from "./classes/TextAlignment"
+import Transform from "./classes/Transform"
 
 jss.use(jssPluginGlobal())
 
