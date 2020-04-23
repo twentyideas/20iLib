@@ -156,7 +156,7 @@ const helpers = {
                             node: "12.13.0"
                         },
                         dependencies: {
-                            "adm-zip": "^0.4.13"
+                            "adm-zip": "0.4.13"
                         },
                         scripts: {
                             // rebuild packages that need it!!

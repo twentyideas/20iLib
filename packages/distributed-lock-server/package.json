@@ -18,7 +18,7 @@
         "lint": "eslint --fix \"src/**/*.{js,ts,jsx,tsx}\""
     },
     "dependencies": {
-        "adm-zip": "^0.4.13",
+        "adm-zip": "0.4.13",
         "body-parser": "^1.19.0",
         "cors": "^2.8.5",
         "db-migrate": "^0.11.6",
