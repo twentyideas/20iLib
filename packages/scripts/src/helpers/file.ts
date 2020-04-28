@@ -66,7 +66,7 @@ function createDir(dir: string) {
 }
 
 function copyDir(srcDir: string, destDir: string, keepExisingInDest = false) {
-    return fs.copySync(srcDir, destDir, { overwrite: !keepExisingInDest })
+    return fs.copySync(srcDir, destDir, { overwrite: !keepExisingInDest, dereference: true })
 }
 
 function copyFile(src: string, dest: string) {
