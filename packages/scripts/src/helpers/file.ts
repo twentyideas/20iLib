@@ -2,6 +2,7 @@ import fs from "fs-extra"
 import path from "path"
 import mkdirp from "mkdirp"
 import lodash from "lodash"
+import rimraf from "rimraf"
 import * as stringFuncs from "./string"
 
 interface TemplateObj {
@@ -79,17 +80,18 @@ function removeDir(dir: string) {
     }
 
     try {
-        fs.readdirSync(dir).forEach(file => {
-            const curPath = [dir, file].join(path.sep)
-            if (fs.lstatSync(curPath).isDirectory()) {
-                // recurse
-                removeDir(curPath)
-            } else {
-                // delete file
-                fs.unlinkSync(curPath)
-            }
-        })
-        fs.rmdirSync(dir)
+        // fs.readdirSync(dir).forEach(file => {
+        //     const curPath = [dir, file].join(path.sep)
+        //     if (fs.lstatSync(curPath).isDirectory()) {
+        //         // recurse
+        //         removeDir(curPath)
+        //     } else {
+        //         // delete file
+        //         fs.unlinkSync(curPath)
+        //     }
+        // })
+        // fs.rmdirSync(dir)
+        rimraf.sync(dir)
     } catch (e) {
         throw e
     }
