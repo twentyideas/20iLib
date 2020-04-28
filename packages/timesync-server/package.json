@@ -1,6 +1,6 @@
 {
     "name": "@20i/timesync-server",
-    "version": "1.0.42",
+    "version": "1.0.43",
     "description": "20i timesync server",
     "main": "src/main.ts",
     "author": "wolf",
@@ -14,7 +14,7 @@
         "lint": "eslint --fix \"src/**/*.{js,ts,jsx,tsx}\""
     },
     "dependencies": {
-        "@20i/heroku-deploy-node": "^1.0.42",
+        "@20i/heroku-deploy-node": "^1.0.43",
         "cors": "^2.8.5",
         "express": "^4.17.1",
         "lodash": "^4.17.15",
