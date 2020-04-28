@@ -74,7 +74,7 @@ const helpers = {
             }
 
             console.log(`Now pushing to heroku... ${remoteId}`)
-            runCommand(`git push ${remoteId} ${buildBranch}:master --force`)
+            runCommand(`git push ${remoteId} ${buildBranch}:master --force`, { silent: false })
         },
         deploy(remoteIds: string[]) {
             const cwd = process.cwd()
