@@ -82,14 +82,18 @@ const helpers = {
             process.chdir(PATHS.deploy.root)
             runCommand("git init")
 
-            remoteIds.forEach(remoteId => {
-                console.log(`Deploying ${remoteId}...`)
-                helpers.heroku.addGitEnv(remoteId)
-                helpers.git.commit()
-                helpers.heroku.push(remoteId, "master")
-                console.log(`Finished`)
-                helpers.heroku.removeGitEnv(remoteId)
-            })
+            try {
+                remoteIds.forEach(remoteId => {
+                    console.log(`Deploying ${remoteId}...`)
+                    helpers.heroku.addGitEnv(remoteId)
+                    helpers.git.commit()
+                    helpers.heroku.push(remoteId, "master")
+                    console.log(`Finished`)
+                    helpers.heroku.removeGitEnv(remoteId)
+                })
+            } catch (e) {
+                throw e
+            }
 
             process.chdir(cwd)
         }
