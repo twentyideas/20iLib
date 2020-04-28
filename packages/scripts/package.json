@@ -1,6 +1,6 @@
 {
     "name": "@20i/scripts",
-    "version": "1.0.43",
+    "version": "1.0.44",
     "description": "Pre-built scripts and tools to allow quick writing of node scripts",
     "main": "./dist/index.js",
     "scripts": {
@@ -15,7 +15,7 @@
         "fs-extra": "^8.1.0",
         "lodash": "^4.17.15",
         "mkdirp": "^0.5.1",
-        "shelljs": "^0.8.3",
-        "rimraf": "^3.0.2"
+        "rimraf": "^3.0.2",
+        "shelljs": "^0.8.3"
     }
 }
