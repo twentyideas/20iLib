@@ -15,7 +15,7 @@ import Transform from "./classes/Transform"
 
 jss.use(jssPluginGlobal())
 
-export function useClasses(theme: MuiTheme, globalClasses?: React.CSSProperties) {
+export function useClasses(theme: MuiTheme, globalClasses?: { [key: string]: React.CSSProperties }) {
     return makeStyles({
         /* make sure the headers & font matches what we told MUI */
         "@global": {
