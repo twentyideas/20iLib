@@ -15,7 +15,7 @@ import Transform from "./classes/Transform"
 
 jss.use(jssPluginGlobal())
 
-export function useClasses(theme: MuiTheme) {
+export function useClasses(theme: MuiTheme, globalClasses?: React.CSSProperties) {
     return makeStyles({
         /* make sure the headers & font matches what we told MUI */
         "@global": {
@@ -38,7 +38,8 @@ export function useClasses(theme: MuiTheme) {
             },
             "::-webkit-scrollbar-thumb:hover": { backgroundColor: theme.palette.primary.dark },
             "::-webkit-scrollbar-track": { display: "none" },
-            "::-webkit-scrollbar": { width: 16, height: 16 }
+            "::-webkit-scrollbar": { width: 16, height: 16 },
+            ...globalClasses
         },
         ...Border(),
         ...Color(theme.palette),
