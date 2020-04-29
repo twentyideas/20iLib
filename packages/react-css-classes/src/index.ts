@@ -12,10 +12,11 @@ import Positional from "./classes/Positional"
 import Shadow from "./classes/Shadow"
 import TextAlignment from "./classes/TextAlignment"
 import Transform from "./classes/Transform"
+import { CSSProperties } from "@material-ui/styles"
 
 jss.use(jssPluginGlobal())
 
-export function useClasses(theme: MuiTheme, globalClasses?: { [key: string]: React.CSSProperties }) {
+export function useClasses(theme: MuiTheme, globalClasses?: { [key: string]: CSSProperties }) {
     return makeStyles({
         /* make sure the headers & font matches what we told MUI */
         "@global": {
