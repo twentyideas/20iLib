@@ -165,11 +165,12 @@ const helpers = {
                             node: "12.13.0"
                         },
                         dependencies: {
-                            "adm-zip": "0.4.13"
+                            "adm-zip": "0.4.13",
+                            rimraf: "3.0.2"
                         },
                         scripts: {
-                            // rebuild packages that need it!!
-                            build: "node extractDeployment && cd out && npm rebuild",
+                            // rebuild packages that need it!! delete the zip file, and dedupe the package
+                            build: "node extractDeployment && rimraf ./out.zip && cd out && npm rebuild && npm dedupe",
                             start: "cd out && npm run start"
                         }
                     },
