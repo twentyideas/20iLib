@@ -83,12 +83,17 @@ const helpers = {
             runCommand("git init")
 
             try {
-                remoteIds.forEach(remoteId => {
+                remoteIds.forEach((remoteId, idx) => {
                     console.log(`Deploying ${remoteId}...`)
                     helpers.heroku.addGitEnv(remoteId)
-                    helpers.git.commit()
+
+                    // we only need to commit on the first remoteId, since the working tree will be clean on the next one.
+                    if (idx === 0) {
+                        helpers.git.commit()
+                    }
+
                     helpers.heroku.push(remoteId, "master")
-                    console.log(`Finished`)
+                    console.log(`Finished deploying to ${remoteId}`)
                     helpers.heroku.removeGitEnv(remoteId)
                 })
             } catch (e) {
