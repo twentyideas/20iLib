@@ -1,8 +1,21 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const path = require("path")
-const AdmZip = require("adm-zip")
+const extractZip = require("extract-zip")
 
-const zipPath = path.resolve(__dirname, "./out.zip")
-const zipFile = new AdmZip(zipPath)
+async function extract() {
+    console.log("extracting...")
 
-zipFile.extractAllTo(path.resolve(__dirname, "out"))
+    const start = new Date().getTime()
+
+    const zipPath = path.resolve(__dirname, "./out.zip")
+    const outputPath = path.resolve(__dirname, "out")
+
+    await extractZip(zipPath, { dir: outputPath })
+
+    const end = new Date().getTime()
+    const total = (end - start) / 1000
+    console.log(`Finished extracting in ${total} seconds`)
+    process.exit(0)
+}
+
+extract()

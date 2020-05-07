@@ -3,8 +3,8 @@ import * as path from "path"
 import * as scripts from "@20i/scripts"
 import inquirer from "inquirer"
 import EnvPaths from "env-paths"
-import AdmZip from "adm-zip"
 import fs from "fs"
+import archiver from "archiver"
 
 enum ReleaseType {
     PATCH = "patch",
@@ -27,9 +27,12 @@ interface DeployParams {
     buildFiles: string[]
 
     packageJsons?: string[]
+
+    zipCompressionLevel?: number
 }
 
 interface CreateDeployParams {
+    zipCompressionLevel?: number
     projectName: string
     buildRoot: string
     buildDirs: string[]
@@ -52,6 +55,12 @@ const PATHS = {
         extractionScript: path.resolve(ENV_PATH.temp, "extractDeployment.js"),
         packageJson: path.resolve(ENV_PATH.temp, "package.json")
     }
+}
+
+const clamp = (val: number, min: number, max: number) => {
+    if (val < min) return min
+    if (val > max) return max
+    return val
 }
 
 const helpers = {
@@ -104,7 +113,7 @@ const helpers = {
         }
     },
     files: {
-        createDeployFolder({ projectName, buildFiles: files, buildDirs: folders, buildRoot: root, version }: CreateDeployParams) {
+        async createDeployFolder({ projectName, buildFiles: files, buildDirs: folders, buildRoot: root, version, zipCompressionLevel }: CreateDeployParams) {
             console.log(`Build folder: ${PATHS.deploy.root}`)
             console.log("Cleaning previous build (if any)...")
             if (scripts.helpers.file.dirExists(PATHS.deploy.root)) {
@@ -116,39 +125,56 @@ const helpers = {
 
             // isolate the build
             console.log("Creating build zip...")
-            const zip = new AdmZip()
-            folders.forEach(folder => {
-                const relativePath = path.relative(root, folder)
-                zip.addLocalFolder(folder, relativePath)
-            })
-            files.forEach(file => {
-                const fileFolder = file
-                    .split(path.sep)
-                    .slice(0, -1)
-                    .join(path.sep)
-                const relativePath = path.relative(root, fileFolder)
 
-                // if this is a package.json, update the version number to the new one
-                const fileName = file.split(path.sep).slice(-1)[0]
-                if (fileName === "package.json") {
-                    try {
-                        const packageJson = JSON.parse(fs.readFileSync(file, { encoding: "utf8" }))
-                        packageJson.version = version
-                        const stringified = JSON.stringify(packageJson, null, 4)
+            const doZip = async () => {
+                const output = fs.createWriteStream(PATHS.deploy.zip)
+                const opts = { followSymlinks: true }
+                const archive = archiver("zip", { ...opts, zlib: { level: zipCompressionLevel === undefined ? 5 : clamp(zipCompressionLevel, 0, 9) } })
+
+                return new Promise(async (resolve, reject) => {
+                    output.on("close", resolve)
+                    output.on("error", reject)
+                    archive.pipe(output)
+
+                    folders.forEach(folder => {
+                        const relativePath = path.relative(root, folder)
+                        archive.directory(folder, relativePath)
+                    })
+
+                    files.forEach(file => {
+                        const fileFolder = file
+                            .split(path.sep)
+                            .slice(0, -1)
+                            .join(path.sep)
+                        const relativePath = path.relative(root, fileFolder)
+
+                        // if this is a package.json, update the version number to the new one
+                        const fileName = file.split(path.sep).slice(-1)[0]
                         const p = [relativePath, fileName].filter(Boolean).join(path.sep)
-                        console.log(`Build:: Incrementing ${p} version to ${version}...`)
-                        zip.addFile(p, Buffer.alloc(stringified.length, stringified), stringified)
-                        console.log(`Build:: Incremented ${p} version to ${version}`)
-                    } catch (e) {
-                        console.error("Unable to increment package.json version. Adding file as is")
-                        zip.addLocalFile(file, relativePath)
-                    }
-                } else {
-                    zip.addLocalFile(file, relativePath)
-                }
-            })
+                        if (fileName === "package.json") {
+                            try {
+                                const packageJson = JSON.parse(fs.readFileSync(file, { encoding: "utf8" }))
+                                packageJson.version = version
+                                const stringified = JSON.stringify(packageJson, null, 4)
+                                console.log(`Build:: Incrementing ${p} version to ${version}...`)
+                                // zip.addFile(p, Buffer.alloc(stringified.length, stringified), stringified)
+                                archive.append(stringified, { name: p })
+                            } catch (e) {
+                                console.error("Unable to increment package.json version. Adding file as is")
+                                // zip.addLocalFile(file, relativePath)
+                                archive.append(fs.createReadStream(file), { name: p })
+                            }
+                        } else {
+                            archive.append(fs.createReadStream(file), { name: p })
+                            // zip.addLocalFile(file, relativePath)
+                        }
+                    })
 
-            zip.writeZip(PATHS.deploy.zip)
+                    archive.finalize()
+                })
+            }
+
+            await doZip()
 
             console.log("copying extraction script to temp deploy folder...")
             scripts.helpers.file.copyFile(PATHS.build.extractionScript, PATHS.deploy.extractionScript)
@@ -165,7 +191,7 @@ const helpers = {
                             node: "12.13.0"
                         },
                         dependencies: {
-                            "adm-zip": "0.4.13",
+                            "extract-zip": "^2.0.0",
                             rimraf: "3.0.2"
                         },
                         scripts: {
@@ -239,7 +265,15 @@ const helpers = {
     }
 }
 
-export async function herokuDeployNode({ remoteIds, projectName, buildDirs, buildFiles, buildRoot, packageJsons }: DeployParams): Promise<string[]> {
+export async function herokuDeployNode({
+    remoteIds,
+    projectName,
+    buildDirs,
+    buildFiles,
+    buildRoot,
+    packageJsons,
+    zipCompressionLevel
+}: DeployParams): Promise<string[]> {
     if (!remoteIds.length) {
         console.log("Please provide heroku remoteIds to deploy")
         return []
@@ -272,7 +306,8 @@ export async function herokuDeployNode({ remoteIds, projectName, buildDirs, buil
 
     // Copy over only the files needed to run this thing! Node_modules copy will take a while!
     console.log("Setting up temp deploy folder...")
-    helpers.files.createDeployFolder({
+    await helpers.files.createDeployFolder({
+        zipCompressionLevel,
         projectName,
         buildRoot,
         buildDirs,
