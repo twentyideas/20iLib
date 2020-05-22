@@ -1,12 +1,21 @@
-import Firebase, { User as FbAuthUser } from "firebase"
-import { FirestoreModels } from "./types"
-import { IN, OUT } from "./transform"
-import { pickBy } from "lodash"
 import * as Exception from "@20i/exceptions"
+import Firebase, { User as FbAuthUser } from "firebase"
 import admin from "firebase-admin"
+import { isFunction, pickBy } from "lodash"
+import { IN, OUT } from "./transform"
+import { FirestoreModels } from "./types"
 
-export * from "./types"
 export * from "./transform"
+export * from "./types"
+
+const isAdminApp = (app: Firebase.app.App | admin.app.App): app is admin.app.App => {
+    const b = app as admin.app.App
+    return isFunction(b.securityRules)
+}
+
+const isClientApp = (app: Firebase.app.App | admin.app.App): app is Firebase.app.App => {
+    return !isAdminApp(app)
+}
 
 interface State {
     app: Firebase.app.App | admin.app.App | undefined
@@ -103,6 +112,31 @@ export class FirebaseModelFns<T extends FirestoreModels.BaseRecord> {
             update: defaultValidationFn,
             remove: defaultValidationFn
         }
+    }
+
+    asUser = (currentUser: FbAuthUser | undefined) => {
+        return {
+            create: (partial: Partial<T>, overwriteExisting?: boolean) => this.create(currentUser, partial, overwriteExisting),
+            get: (id: string, blankIfNonExistent?: boolean) => this.get(currentUser, id, blankIfNonExistent),
+            exists: (id: string) => this.exists(currentUser, id),
+            find: (query: FirestoreModels.FbQuery[]) => this.find(currentUser, query),
+            findOne: (query: FirestoreModels.FbQuery[]) => this.findOne(currentUser, query),
+            update: (partial: Partial<T>) => this.update(currentUser, partial),
+            updateOrCreate: (partial: Partial<T>) => this.updateOrCreate(currentUser, partial),
+            remove: (id: string) => this.remove(currentUser, id)
+        }
+    }
+
+    asLoggedInUser = () => {
+        if (!state.app) {
+            throw Exception.InternalError(`Called firestore before initializing app!`)
+        }
+
+        if (!isClientApp(state.app)) {
+            throw Exception.InternalError(`The firestore app is not a client app!`)
+        }
+
+        return this.asUser(state.app.auth().currentUser || undefined)
     }
 
     create = async (currentUser: FbAuthUser | undefined, partial: Partial<T>, overwriteExisting?: boolean): Promise<T> => {
