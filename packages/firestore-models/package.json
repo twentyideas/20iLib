@@ -1,6 +1,6 @@
 {
     "name": "@20i/firestore-models",
-    "version": "1.0.41",
+    "version": "1.0.50",
     "description": "Easily manipulate firestore collections in a standardized way",
     "author": "wolf",
     "license": "ISC",
