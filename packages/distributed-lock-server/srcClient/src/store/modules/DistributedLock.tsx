@@ -1,12 +1,12 @@
-import { observable, computed } from "mobx"
-import Base from "./Base"
 import Axios from "axios"
 import { sanitizeUrl } from "helpers/sanitizeUrl"
+import { computed, observable } from "mobx"
+import Base from "./Base"
 
 const axios = Axios.create({})
 
 export const SERVER_URLS = {
-    USA: "http://20idistributedlock.us-east-2.elasticbeanstalk.com/api",
+    USA: "https://20idistributedlock.com/api",
     LOCAL: "http://localhost:5000/api"
 }
 

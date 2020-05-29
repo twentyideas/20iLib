@@ -1,7 +1,7 @@
 import axios from "axios"
 
 export const SERVERS = {
-    USA: "http://20idistributedlock.us-east-2.elasticbeanstalk.com",
+    USA: "https://20idistributedlock.com",
     DEV: "http://localhost:5000"
 }
 

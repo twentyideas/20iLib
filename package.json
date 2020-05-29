@@ -36,6 +36,7 @@
         "devlock": "cd ./packages/distributed-lock && npm run dev",
         "devlockserver": "cd ./packages/distributed-lock-server && npm run dev",
         "devlockclient": "cd ./packages/distributed-lock-server/srcClient && npm start",
+        "buildlockserver": "cd ./packages/distributed-lock-server && npm run createarchive",
         "build": "lerna bootstrap && lerna run build",
         "publish": "npm run build && lerna publish",
         "lint": "lerna run lint --stream --parallel",
