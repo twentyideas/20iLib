@@ -69,6 +69,10 @@ const transformFns = {
         )
     },
     deserialize(obj: any, dict: any[][]) {
+        if (obj === undefined || obj === null) {
+            return obj
+        }
+
         const object = transformFns.deserializeNestedArrays(obj)
         const search = (dict || []).map(arr => arr[0])
         const replace = (dict || []).map(arr => arr[1])
