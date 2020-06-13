@@ -1,7 +1,7 @@
 import axios from "axios"
 
 export const SERVERS = {
-    USA: "https://20idistributedlock.com",
+    USA: "https://useast.20idistributedlock.com",
     DEV: "http://localhost:5000"
 }
 
