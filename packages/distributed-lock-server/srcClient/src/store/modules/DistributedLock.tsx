@@ -6,7 +6,7 @@ import Base from "./Base"
 const axios = Axios.create({})
 
 export const SERVER_URLS = {
-    USA: "https://useast.20idistributedlock.com",
+    USA: "https://useast.20idistributedlock.com/api",
     LOCAL: "http://localhost:5000/api"
 }
 
