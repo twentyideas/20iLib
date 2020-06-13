@@ -4,6 +4,22 @@ import * as TimeSync from "timesync-fork-wolf"
 type momentInput = string | number | void | moment.Moment | Date | (string | number)[] | moment.MomentInputObject | undefined
 type momentFormat = string | moment.MomentBuiltinFormat | (string | moment.MomentBuiltinFormat)[] | undefined
 
+interface TimeSyncOptions {
+    timesyncEndpoint: string
+    delay: number
+    timeout: number
+    numSyncs: number
+}
+
+function getOptions(partial?: Partial<TimeSyncOptions>): TimeSyncOptions {
+    return {
+        timesyncEndpoint: partial?.timesyncEndpoint || "https://twentyideas-timesync.herokuapp.com/timesync",
+        delay: partial?.delay ? Math.min(partial.delay, 50) : 1000,
+        timeout: partial?.timeout ? Math.max(partial.timeout, 10000) : 10000,
+        numSyncs: partial?.numSyncs ? Math.max(partial.numSyncs, 2) : 2
+    }
+}
+
 export class TimeClient {
     offsetMs = 0
     timeSyncInstance?: TimeSync.TimeSyncInstance
@@ -12,53 +28,23 @@ export class TimeClient {
 
     syncing = false
 
-    init = (timesyncEndpoint = "https://twentyideas-timesync.herokuapp.com/timesync", interval?: number | null, delay = 1000, timeout = 10000) => {
-        return new Promise((resolve, reject) => {
-            const i = interval && interval > 0 ? Math.max(10000, interval) : null
-            if (i && i !== interval) {
-                console.log(`Timesync interval to ${i} ms. That is the minimum`)
-            }
-
-            let changes = 0
-
-            this.timeSyncInstance = i
-                ? TimeSync.create({ server: timesyncEndpoint, interval: i, delay, timeout })
-                : TimeSync.create({ server: timesyncEndpoint, delay, timeout })
-
-            this.timeSyncInstance.on("change", (offset: number) => {
-                changes += 1
-                this.offsetMs = offset
-                console.log(`updated time offset to: ${this.offsetMs} ms`)
-                if (changes >= 2) {
-                    resolve()
-                }
-            })
-            this.timeSyncInstance.on("error", () => {
-                if (this.timeSyncInstance) {
-                    this.timeSyncInstance.destroy()
-                }
-                this.timeSyncInstance = undefined
-                reject()
-            })
-        })
-    }
-
-    sync = (timesyncEndpoint = "https://twentyideas-timesync.herokuapp.com/timesync", delay = 1000, timeout = 10000) => {
+    sync = (params?: Partial<TimeSyncOptions>) => {
+        const { timesyncEndpoint, timeout, delay, numSyncs } = getOptions(params)
         return new Promise((resolve, reject) => {
             if (this.syncing) {
                 resolve()
                 return
             }
 
-            let changes = 0
+            let remainingSyncs = numSyncs
             const timeSyncInstance = TimeSync.create({ server: timesyncEndpoint, interval: null, delay, timeout })
             this.syncing = true
             timeSyncInstance.sync()
             timeSyncInstance.on("change", (offset: number) => {
-                changes += 1
+                remainingSyncs -= 1
                 this.offsetMs = offset
-                console.log(`updated time offset to: ${this.offsetMs} ms`)
-                if (changes >= 2) {
+                console.log(`TimeSync:: updated time offset to: ${this.offsetMs} ms. Remaining syncs: ${remainingSyncs}`)
+                if (remainingSyncs <= 0) {
                     this.syncing = false
 
                     // destroy instance on resolve to kill the connection
