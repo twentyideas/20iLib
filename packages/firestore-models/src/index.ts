@@ -72,9 +72,9 @@ export interface ValidationFns<T> {
 
 // generic helper class to interact with firebase
 export class FirebaseModelFns<T extends FirestoreModels.BaseRecord> {
-    _blankFn: FirestoreModels.BLANK_FN<T>
-    _collectionName: string
-    _validationFns: ValidationFns<T>
+    private _blankFn: FirestoreModels.BLANK_FN<T>
+    private _collectionName: string
+    private _validationFns: ValidationFns<T>
 
     private _update = async (currentUser: FbAuthUser | undefined, partial: Partial<T>, createIfNonExistent: boolean): Promise<T> => {
         if (!partial.id) {
