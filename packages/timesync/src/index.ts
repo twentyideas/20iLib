@@ -21,7 +21,7 @@ function getOptions(partial?: Partial<TimeSyncOptions>): TimeSyncOptions {
     }
 }
 
-const VERSION = [1, 1, 2].join(".")
+const VERSION = [1, 1, 3].join(".")
 const NAME = `TimeSync(${VERSION})::`
 
 const helpers = {
