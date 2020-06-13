@@ -1,5 +1,6 @@
 import moment from "moment"
 import * as TimeSync from "timesync-fork-wolf"
+import promiseChain from "./promiseChain"
 
 type momentInput = string | number | void | moment.Moment | Date | (string | number)[] | moment.MomentInputObject | undefined
 type momentFormat = string | moment.MomentBuiltinFormat | (string | moment.MomentBuiltinFormat)[] | undefined
@@ -20,63 +21,80 @@ function getOptions(partial?: Partial<TimeSyncOptions>): TimeSyncOptions {
     }
 }
 
+const VERSION = [1, 1, 2].join(".")
+const NAME = `TimeSync(${VERSION})::`
+
+const helpers = {
+    sync: async (timeSyncInstance: TimeSync.TimeSyncInstance): Promise<number> => {
+        let remainingSyncs = 2
+        let offsetMs = 0
+        return new Promise((resolve, reject) => {
+            timeSyncInstance.sync()
+            timeSyncInstance.on("change", (offset: number) => {
+                remainingSyncs -= 1
+                offsetMs = offset
+                if (remainingSyncs <= 0) {
+                    // destroy instance on resolve to kill the connection
+                    resolve(offsetMs)
+                }
+            })
+            timeSyncInstance.on("error", reject)
+        })
+    },
+    range: (n: number) => Array(...Array(n)).map((x, i) => i)
+}
+
 export class TimeClient {
     offsetMs = 0
-    timeSyncInstance?: TimeSync.TimeSyncInstance
-
     server = ""
 
     syncing = false
 
     sync = (params?: Partial<TimeSyncOptions>) => {
         const { timesyncEndpoint, timeout, delay, numSyncs } = getOptions(params)
-        let elapsedMs = -100
 
-        return new Promise((resolve, reject) => {
+        return new Promise(async (resolve, reject) => {
             if (this.syncing) {
                 resolve()
                 return
             }
 
-            let remainingSyncs = numSyncs
-            const timeSyncInstance = TimeSync.create({ server: timesyncEndpoint, interval: null, delay, timeout, repeat: numSyncs })
-
-            const onError = (err: any) => {
-                this.syncing = false
-                timeSyncInstance.destroy()
-                reject(err || "TimeSync::Error occurred")
-            }
-
-            // this function makes sure that we do actually reject this promise after the timeout specified!
-            const rejectOnTimeoutLoop = () => {
-                elapsedMs += 100
-                if (!this.syncing) {
-                    // the loop ends here
-                    return
-                }
-
-                if (elapsedMs >= timeout) {
-                    // the loop ends here
-                    return onError(`TimeSync:: Timeout of ${timeout} exceeded`)
-                }
-                setTimeout(rejectOnTimeoutLoop, 100)
-            }
+            // looks like it always does 2 requests per sync. So we encapsulate it.
+            const nSync = Math.max(1, Math.floor(numSyncs / 2))
+            const timeSyncInstance = TimeSync.create({ server: timesyncEndpoint, interval: null, delay, timeout })
 
             this.syncing = true
-            timeSyncInstance.sync()
-            timeSyncInstance.on("change", (offset: number) => {
-                remainingSyncs -= 1
-                this.offsetMs = offset
-                console.log(`TimeSync:: updated time offset to: ${this.offsetMs} ms. Remaining syncs: ${remainingSyncs}`)
-                if (remainingSyncs <= 0) {
-                    // destroy instance on resolve to kill the connection
-                    this.syncing = false
-                    timeSyncInstance.destroy()
-                    resolve(this.offsetMs)
+            let isFinished = false
+
+            const onSuccess = (offset: number | undefined) => {
+                isFinished = true
+                this.syncing = false
+                timeSyncInstance.destroy()
+                if (offset !== undefined) {
+                    this.offsetMs = offset
                 }
+                return resolve()
+            }
+            const onError = (err: any) => {
+                isFinished = true
+                this.syncing = false
+                timeSyncInstance.destroy()
+                return reject(err || `${NAME} Error occurred`)
+            }
+
+            const fns = helpers.range(nSync).map(i => async () => {
+                const offsetMs = await helpers.sync(timeSyncInstance)
+                console.log(`${NAME} updated time offset to: ${offsetMs} ms. Remaining syncs: ${nSync - i - 1}`)
+                return offsetMs
             })
-            timeSyncInstance.on("error", onError)
-            rejectOnTimeoutLoop()
+
+            // run the sync op
+            promiseChain(fns)
+                .then(onSuccess)
+                .catch(onError)
+
+            // ensure timeout is respected
+            setTimeout(() => !isFinished && onError(`${NAME} Timeout of ${timeout} exceeded while trying to sync`), timeout)
         })
     }
 
