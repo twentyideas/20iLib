@@ -1,6 +1,6 @@
 {
     "name": "@20i/distributed-lock-server",
-    "version": "1.0.51",
+    "version": "1.1.5",
     "description": "20i distributed lock server code. This is deployed to aws",
     "main": "src/main.ts",
     "author": "wolf",
