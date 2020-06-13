@@ -30,6 +30,8 @@ export class TimeClient {
 
     sync = (params?: Partial<TimeSyncOptions>) => {
         const { timesyncEndpoint, timeout, delay, numSyncs } = getOptions(params)
+        let elapsedMs = -100
+
         return new Promise((resolve, reject) => {
             if (this.syncing) {
                 resolve()
@@ -37,7 +39,29 @@ export class TimeClient {
             }
 
             let remainingSyncs = numSyncs
-            const timeSyncInstance = TimeSync.create({ server: timesyncEndpoint, interval: null, delay, timeout })
+            const timeSyncInstance = TimeSync.create({ server: timesyncEndpoint, interval: null, delay, timeout, repeat: numSyncs })
+
+            const onError = (err: any) => {
+                this.syncing = false
+                timeSyncInstance.destroy()
+                reject(err || "TimeSync::Error occurred")
+            }
+
+            // this function makes sure that we do actually reject this promise after the timeout specified!
+            const rejectOnTimeoutLoop = () => {
+                elapsedMs += 100
+                if (!this.syncing) {
+                    // the loop ends here
+                    return
+                }
+
+                if (elapsedMs >= timeout) {
+                    // the loop ends here
+                    return onError(`TimeSync:: Timeout of ${timeout} exceeded`)
+                }
+                setTimeout(rejectOnTimeoutLoop, 100)
+            }
+
             this.syncing = true
             timeSyncInstance.sync()
             timeSyncInstance.on("change", (offset: number) => {
@@ -45,18 +69,14 @@ export class TimeClient {
                 this.offsetMs = offset
                 console.log(`TimeSync:: updated time offset to: ${this.offsetMs} ms. Remaining syncs: ${remainingSyncs}`)
                 if (remainingSyncs <= 0) {
-                    this.syncing = false
-
                     // destroy instance on resolve to kill the connection
+                    this.syncing = false
                     timeSyncInstance.destroy()
-                    resolve()
+                    resolve(this.offsetMs)
                 }
             })
-            timeSyncInstance.on("error", () => {
-                this.syncing = false
-                timeSyncInstance.destroy()
-                reject()
-            })
+            timeSyncInstance.on("error", onError)
+            rejectOnTimeoutLoop()
         })
     }
 
