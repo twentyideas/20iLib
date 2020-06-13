@@ -123,7 +123,11 @@ export class FirebaseModelFns<T extends FirestoreModels.BaseRecord> {
             findOne: (query: FirestoreModels.FbQuery[]) => this.findOne(currentUser, query),
             update: (partial: Partial<T>) => this.update(currentUser, partial),
             updateOrCreate: (partial: Partial<T>) => this.updateOrCreate(currentUser, partial),
-            remove: (id: string) => this.remove(currentUser, id)
+            remove: (id: string) => this.remove(currentUser, id),
+            querySubscribe: (query: FirestoreModels.FbQuery[], onValue: (val: T[]) => void) => this.querySubscribe(currentUser, query, onValue),
+            subscribe: (id: string, onValue: (val: T | undefined) => void, blankIfNonExistent = false) => {
+                return this.subscribe(currentUser, id, onValue, blankIfNonExistent)
+            }
         }
     }
 
@@ -243,18 +247,50 @@ export class FirebaseModelFns<T extends FirestoreModels.BaseRecord> {
         return entityRemoved
     }
 
-    subscribe = (id: string, onValue: (val: T | undefined) => void, blankIfNonExistent = false): (() => void) => {
+    subscribe = (currentUser: FbAuthUser | undefined, id: string, onValue: (val: T | undefined) => void, blankIfNonExistent = false): (() => void) => {
         return firestore()
             .collection(this._collectionName)
             .doc(id)
-            .onSnapshot(snap => {
+            .onSnapshot(async snap => {
                 const data = snap.data()
+                const emptyData = blankIfNonExistent ? this._blankFn() : undefined
                 if (data === undefined) {
-                    return blankIfNonExistent ? this._blankFn() : undefined
+                    return emptyData
                 }
 
                 const entity = this._blankFn(IN(data) as Partial<T>)
-                onValue(entity)
+                try {
+                    await this._validationFns.get(entity, currentUser)
+                    return onValue(entity)
+                } catch (e) {
+                    return onValue(emptyData)
+                }
             })
+    }
+
+    querySubscribe = (currentUser: FbAuthUser | undefined, query: FirestoreModels.FbQuery[], onValue: (val: T[]) => void): (() => void) => {
+        let q: Firebase.firestore.Query = firestore().collection(this._collectionName)
+        query.forEach(([prop, op, value]) => {
+            q = q.where(prop, op, value)
+        })
+
+        return q.onSnapshot(async snap => {
+            if (!snap.docs.length) {
+                return onValue([])
+            }
+            let arr = snap.docs.map(doc => this._blankFn(IN(doc.data()) as Partial<T>))
+            const validationResult = await Promise.all(
+                arr.map(async entity => {
+                    try {
+                        await this._validationFns.get(entity, currentUser)
+                        return true
+                    } catch (e) {
+                        return false
+                    }
+                })
+            )
+            arr = arr.filter((entity, idx) => validationResult[idx] === true)
+            return onValue(arr)
+        })
     }
 }
