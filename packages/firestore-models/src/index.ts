@@ -123,6 +123,7 @@ export class FirebaseModelFns<T extends FirestoreModels.BaseRecord> {
             findOne: (query: FirestoreModels.FbQuery[]) => this.findOne(currentUser, query),
             update: (partial: Partial<T>) => this.update(currentUser, partial),
             updateOrCreate: (partial: Partial<T>) => this.updateOrCreate(currentUser, partial),
+            mergeUpdate: (partial: Partial<T>) => this.mergeUpdate(currentUser, partial),
             remove: (id: string) => this.remove(currentUser, id),
             querySubscribe: (query: FirestoreModels.FbQuery[], onValue: (val: T[]) => void) => this.querySubscribe(currentUser, query, onValue),
             subscribe: (id: string, onValue: (val: T | undefined) => void, blankIfNonExistent = false) => {
@@ -231,6 +232,41 @@ export class FirebaseModelFns<T extends FirestoreModels.BaseRecord> {
         }
 
         return this._update(currentUser, partial, true)
+    }
+
+    mergeUpdate = async (currentUser: FbAuthUser | undefined, partial: Partial<T>): Promise<T> => {
+        if (!partial.id) {
+            throw Exception.BadRequest(`Cannot update ${this._collectionName} because no id was given!`)
+        }
+
+        const current = await this.get(currentUser, partial.id)
+        if (!current) {
+            throw Exception.NotFound(`${this._collectionName}: Cannot update entity with id ${partial.id} because it doesn't exist`)
+        }
+
+        const dateUpdated = now().toISOString()
+        const userIdUpdated = currentUser?.uid || FirestoreModels.NO_ID
+
+        const payload = pickBy(partial, (v, k) => !["userIdCreated", "dateCreated"].includes(k))
+        const fullEntityOnUpdate = this._blankFn({
+            ...current,
+            ...payload,
+            dateUpdated,
+            userIdUpdated
+        })
+
+        const updatePayload: Partial<T> = {
+            ...partial,
+            dateUpdated,
+            userIdUpdated
+        }
+
+        await this._validationFns.update(fullEntityOnUpdate, currentUser)
+        await firestore()
+            .collection(this._collectionName)
+            .doc(partial.id)
+            .set(OUT(updatePayload), { merge: true })
+        return fullEntityOnUpdate
     }
 
     remove = async (currentUser: FbAuthUser | undefined, id: string): Promise<T> => {
