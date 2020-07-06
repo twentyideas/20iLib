@@ -1,4 +1,6 @@
-import { CSSProperties } from "@material-ui/styles"
+// import { CSSProperties } from "@material-ui/core/styles"
+
+import { CSSProperties } from "@material-ui/core/styles/withStyles"
 
 export default () => {
     // creates classes from opa1 to opa10

@@ -1,5 +1,5 @@
 import { assign } from "lodash"
-import { CSSProperties } from "@material-ui/styles"
+import { CSSProperties } from "@material-ui/core/styles/withStyles"
 
 export default () => {
     // creates handy classes that are good to use

@@ -12,7 +12,7 @@ import Positional from "./classes/Positional"
 import Shadow from "./classes/Shadow"
 import TextAlignment from "./classes/TextAlignment"
 import Transform from "./classes/Transform"
-import { CSSProperties } from "@material-ui/styles"
+import { CSSProperties } from "@material-ui/core/styles/withStyles"
 
 jss.use(jssPluginGlobal())
 

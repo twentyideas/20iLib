@@ -1,4 +1,4 @@
-import { CSSProperties } from "@material-ui/styles"
+import { CSSProperties } from "@material-ui/core/styles/withStyles"
 import { Palette } from "@material-ui/core/styles/createPalette"
 
 export default (palette: Palette) => {

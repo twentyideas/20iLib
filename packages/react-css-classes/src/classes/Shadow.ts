@@ -1,4 +1,4 @@
-import { CSSProperties } from "@material-ui/styles"
+import { CSSProperties } from "@material-ui/core/styles/withStyles"
 
 const getShadow = (n: number) => {
     const n1 = n / 10

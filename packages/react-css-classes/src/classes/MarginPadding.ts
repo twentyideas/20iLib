@@ -1,4 +1,4 @@
-import { CSSProperties } from "@material-ui/styles"
+import { CSSProperties } from "@material-ui/core/styles/withStyles"
 
 const m = {
     a: (n: number) => ({ margin: `${n}px !important` } as CSSProperties),
