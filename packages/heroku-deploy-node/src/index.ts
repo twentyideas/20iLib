@@ -18,25 +18,32 @@ interface InquirerAnswers {
     releaseType: ReleaseType
 }
 
+interface BuildFilePathInfo {
+    src: string
+    dest: string
+}
+
 interface DeployParams {
     remoteIds: string[]
     projectName: string
 
     buildRoot: string
-    buildDirs: string[]
-    buildFiles: string[]
+    buildDirs: (string | BuildFilePathInfo)[] | BuildFileInfoFn
+    buildFiles: (string | BuildFilePathInfo)[] | BuildFileInfoFn
 
     packageJsons?: string[]
 
     zipCompressionLevel?: number
 }
 
+type BuildFileInfoFn = () => (string | BuildFilePathInfo)[]
+
 interface CreateDeployParams {
     zipCompressionLevel?: number
     projectName: string
     buildRoot: string
-    buildDirs: string[]
-    buildFiles: string[]
+    buildDirs: (string | BuildFilePathInfo)[] | BuildFileInfoFn
+    buildFiles: (string | BuildFilePathInfo)[] | BuildFileInfoFn
     version: string
 }
 
@@ -113,7 +120,7 @@ const helpers = {
         }
     },
     files: {
-        async createDeployFolder({ projectName, buildFiles: files, buildDirs: folders, buildRoot: root, version, zipCompressionLevel }: CreateDeployParams) {
+        async createDeployFolder({ projectName, buildFiles, buildDirs, buildRoot: root, version, zipCompressionLevel }: CreateDeployParams) {
             console.log(`Build folder: ${PATHS.deploy.root}`)
             console.log("Cleaning previous build (if any)...")
             if (scripts.helpers.file.dirExists(PATHS.deploy.root)) {
@@ -126,6 +133,9 @@ const helpers = {
             // isolate the build
             console.log("Creating build zip...")
 
+            const folders = typeof buildDirs === "function" ? buildDirs() : buildDirs
+            const files = typeof buildFiles === "function" ? buildFiles() : buildFiles
+
             const doZip = async () => {
                 const output = fs.createWriteStream(PATHS.deploy.zip)
                 const opts = { followSymlinks: true }
@@ -137,23 +147,39 @@ const helpers = {
                     archive.pipe(output)
 
                     folders.forEach(folder => {
-                        const relativePath = path.relative(root, folder)
-                        archive.directory(folder, relativePath)
+                        if (typeof folder === "string") {
+                            const relativePath = path.relative(root, folder)
+                            archive.directory(folder, relativePath)
+                        } else {
+                            const relativePath = path.relative(root, folder.dest)
+                            archive.directory(folder.src, relativePath)
+                        }
                     })
 
                     files.forEach(file => {
-                        const fileFolder = file
-                            .split(path.sep)
-                            .slice(0, -1)
-                            .join(path.sep)
-                        const relativePath = path.relative(root, fileFolder)
+                        let relativePath: string
+                        let fileName: string
+                        let readPath: string
+                        if (typeof file === "string") {
+                            const fileFolder = file
+                                .split(path.sep)
+                                .slice(0, -1)
+                                .join(path.sep)
+                            relativePath = path.relative(root, fileFolder)
 
-                        // if this is a package.json, update the version number to the new one
-                        const fileName = file.split(path.sep).slice(-1)[0]
+                            // if this is a package.json, update the version number to the new one
+                            fileName = file.split(path.sep).slice(-1)[0]
+                            readPath = file
+                        } else {
+                            relativePath = path.relative(root, file.dest)
+                            fileName = file.src.split(path.sep).slice(-1)[0]
+                            readPath = file.src
+                        }
+
                         const p = [relativePath, fileName].filter(Boolean).join(path.sep)
                         if (fileName === "package.json") {
                             try {
-                                const packageJson = JSON.parse(fs.readFileSync(file, { encoding: "utf8" }))
+                                const packageJson = JSON.parse(fs.readFileSync(readPath, { encoding: "utf8" }))
                                 packageJson.version = version
                                 const stringified = JSON.stringify(packageJson, null, 4)
                                 console.log(`Build:: Incrementing ${p} version to ${version}...`)
@@ -162,10 +188,10 @@ const helpers = {
                             } catch (e) {
                                 console.error("Unable to increment package.json version. Adding file as is")
                                 // zip.addLocalFile(file, relativePath)
-                                archive.append(fs.createReadStream(file), { name: p })
+                                archive.append(fs.createReadStream(readPath), { name: p })
                             }
                         } else {
-                            archive.append(fs.createReadStream(file), { name: p })
+                            archive.append(fs.createReadStream(readPath), { name: p })
                             // zip.addLocalFile(file, relativePath)
                         }
                     })
@@ -175,6 +201,8 @@ const helpers = {
             }
 
             await doZip()
+
+            console.log("Finished creating zip!")
 
             console.log("copying extraction script to temp deploy folder...")
             scripts.helpers.file.copyFile(PATHS.build.extractionScript, PATHS.deploy.extractionScript)
@@ -204,6 +232,8 @@ const helpers = {
                     4
                 )
             })
+
+            console.log("Finished creating deploy folder!")
         },
         updatePackageJsonVersionNumbers(verisonNumber: string, packageJsonPaths: string[]) {
             packageJsonPaths.forEach(filePath => {
