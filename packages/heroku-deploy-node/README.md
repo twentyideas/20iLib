@@ -85,7 +85,7 @@ herokuDeployNode({
     ],
     buildFiles: () => [
         path.resolve(__dirname, "./backend/package.json"),
-        { src: path.resolve(__dirname, "./backend/my-file.txt"), dest: "" } // goes to the root of the build
+        { src: path.resolve(__dirname, "./backend/my-file.txt"), dest: "" } // goes to the root of the build as my-file.txt
     ],
 
     // optional. Provide this if you want this function to update versions
