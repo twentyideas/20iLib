@@ -15,7 +15,7 @@ enum ReleaseType {
 
 interface InquirerAnswers {
     chosenRemoteIds: string[]
-    releaseType: ReleaseType
+    releaseType?: ReleaseType
 }
 
 interface BuildFilePathInfo {
@@ -32,8 +32,8 @@ interface DeployParams {
     buildFiles: (string | BuildFilePathInfo)[] | BuildFileInfoFn
 
     packageJsons?: string[]
-
     zipCompressionLevel?: number
+    dontAskReleaseType?: boolean
 }
 
 type BuildFileInfoFn = () => (string | BuildFilePathInfo)[]
@@ -302,29 +302,32 @@ export async function herokuDeployNode({
     buildFiles,
     buildRoot,
     packageJsons,
-    zipCompressionLevel
+    zipCompressionLevel,
+    dontAskReleaseType
 }: DeployParams): Promise<string[]> {
     if (!remoteIds.length) {
         console.log("Please provide heroku remoteIds to deploy")
         return []
     }
 
-    const answers = await inquirer.prompt([
-        {
-            type: "checkbox",
-            name: "chosenRemoteIds",
-            choices: remoteIds,
-            message: "Where would you like to deploy?",
-            default: (): string[] => []
-        },
-        {
-            type: "list",
-            name: "releaseType",
-            choices: lodash.values(ReleaseType),
-            message: "What type of depoy is this?",
-            default: ReleaseType.PATCH
-        }
-    ])
+    const answers = await inquirer.prompt(
+        [
+            {
+                type: "checkbox",
+                name: "chosenRemoteIds",
+                choices: remoteIds,
+                message: "Where would you like to deploy?",
+                default: (): string[] => []
+            },
+            !dontAskReleaseType && {
+                type: "list",
+                name: "releaseType",
+                choices: lodash.values(ReleaseType),
+                message: "What type of depoy is this?",
+                default: ReleaseType.PATCH
+            }
+        ].filter(Boolean)
+    )
 
     const { chosenRemoteIds, releaseType } = helpers.ToInqurierAnswers(answers)
     if (!chosenRemoteIds.length) {
@@ -332,7 +335,7 @@ export async function herokuDeployNode({
         return []
     }
 
-    const newVersion = releaseType !== ReleaseType.NONE ? helpers.files.getNewVersion(buildRoot, releaseType) : ""
+    const newVersion = releaseType && releaseType !== ReleaseType.NONE ? helpers.files.getNewVersion(buildRoot, releaseType) : ""
 
     // Copy over only the files needed to run this thing! Node_modules copy will take a while!
     console.log("Setting up temp deploy folder...")
