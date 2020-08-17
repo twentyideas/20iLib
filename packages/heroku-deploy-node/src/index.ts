@@ -14,7 +14,7 @@ enum ReleaseType {
 }
 
 interface InquirerAnswers {
-    chosenRemoteIds: string[]
+    chosenRemoteIds?: string[]
     releaseType?: ReleaseType
 }
 
@@ -33,6 +33,7 @@ interface DeployParams {
 
     packageJsons?: string[]
     zipCompressionLevel?: number
+
     dontAskReleaseType?: boolean
 }
 
@@ -317,7 +318,8 @@ export async function herokuDeployNode({
                 name: "chosenRemoteIds",
                 choices: remoteIds,
                 message: "Where would you like to deploy?",
-                default: (): string[] => []
+                default: (): string[] => (remoteIds.length ? [remoteIds[0]] : []),
+                when: () => remoteIds.length > 1
             },
             !dontAskReleaseType && {
                 type: "list",
@@ -329,8 +331,11 @@ export async function herokuDeployNode({
         ].filter(Boolean)
     )
 
-    const { chosenRemoteIds, releaseType } = helpers.ToInqurierAnswers(answers)
-    if (!chosenRemoteIds.length) {
+    const inquirerAnswers = helpers.ToInqurierAnswers(answers)
+    let { chosenRemoteIds } = inquirerAnswers
+    const { releaseType } = inquirerAnswers
+    if (!chosenRemoteIds || !chosenRemoteIds.length) {
+        chosenRemoteIds = [remoteIds[0]]
         console.log("Exiting early because no remote chosen")
         return []
     }
