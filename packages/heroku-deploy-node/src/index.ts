@@ -14,7 +14,7 @@ enum ReleaseType {
 }
 
 interface InquirerAnswers {
-    chosenRemoteIds?: string[]
+    chosenRemoteIds: string[]
     releaseType?: ReleaseType
 }
 
@@ -331,13 +331,14 @@ export async function herokuDeployNode({
         ].filter(Boolean)
     )
 
-    const inquirerAnswers = helpers.ToInqurierAnswers(answers)
-    let { chosenRemoteIds } = inquirerAnswers
-    const { releaseType } = inquirerAnswers
-    if (!chosenRemoteIds || !chosenRemoteIds.length) {
-        chosenRemoteIds = [remoteIds[0]]
-        console.log("Exiting early because no remote chosen")
-        return []
+    const { chosenRemoteIds, releaseType } = helpers.ToInqurierAnswers(answers)
+    if (!chosenRemoteIds.length) {
+        if (remoteIds.length) {
+            chosenRemoteIds.push(remoteIds[0])
+        } else {
+            console.log("Exiting early because no remote chosen")
+            return []
+        }
     }
 
     const newVersion = releaseType && releaseType !== ReleaseType.NONE ? helpers.files.getNewVersion(buildRoot, releaseType) : ""
