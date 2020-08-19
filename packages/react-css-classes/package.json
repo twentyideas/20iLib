@@ -11,12 +11,12 @@
     },
     "peerDependencies": {
         "@material-ui/core": "^4.x",
-        "jss": "^10.1.1",
-        "jss-plugin-global": "^10.1.1"
+        "jss": "^10.x",
+        "jss-plugin-global": "^10.x"
     },
     "devDependencies": {
         "@material-ui/core": "^4.x",
-        "jss": "^10.1.1",
-        "jss-plugin-global": "^10.1.1"
+        "jss": "^10.x",
+        "jss-plugin-global": "^10.x"
     }
 }
