@@ -20,7 +20,7 @@ export function getEnvVars() {
                 } else if (value === "false") {
                     acc[name] = false
                 } else {
-                    const num = lodash.parseInt(value)
+                    const num = lodash.toNumber(value)
                     acc[name] = lodash.isNaN(num) ? value : num
                 }
             } else {
