@@ -1,6 +1,6 @@
 {
     "name": "@20i/scripts",
-    "version": "1.0.44",
+    "version": "1.2.5",
     "description": "Pre-built scripts and tools to allow quick writing of node scripts",
     "main": "./dist/index.js",
     "scripts": {
