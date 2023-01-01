@@ -23,7 +23,7 @@
         "eslint": "^6.6.0",
         "eslint-config-prettier": "^6.4.0",
         "eslint-config-typescript": "^3.0.0",
-        "eslint-loader": "^2.1.1",
+        "eslint-loader": "^4.0.2",
         "eslint-plugin-prettier": "^3.1.1",
         "eslint-plugin-react-directives": "^1.0.1",
         "lerna": "^3.18.4",
